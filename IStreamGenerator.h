@@ -2,15 +2,16 @@
 #include "Generator.h"
 #include <iostream>
 
-namespace miit_algebra
+namespace MATRIX
 {
-    class IStreamGenerator : public Generator
+    template <class Type>
+    class IStreamGenerator : public Generator<Type>
     {
     private:
         std::istream& in;
 
     public:
         IStreamGenerator(std::istream& in = std::cin);
-        int generate() override;
+        Type generate() override;
     };
 }
