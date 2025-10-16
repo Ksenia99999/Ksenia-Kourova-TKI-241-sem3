@@ -1,10 +1,9 @@
 #include <iostream>
-#include <memory>
-#include "VariantExercise.h"
-#include "RandomGenerator.h"
-#include "IStreamGenerator.h"
+#include <cstdlib>
+#include <ctime>
+#include "Matrix.h"
 
-using namespace miit_algebra;
+using namespace MATRIX;
 
 enum Choose {
     manually = 1,
@@ -26,31 +25,57 @@ static int positive_input() {
     return number;
 }
 
-void demonstrate_manual() {
-    std::cout << "Enter array size: ";
-    int n = positive_input();
+static void demonstrate_manual() {
+    std::cout << "=== MANUAL INPUT MODE ===\n\n";
 
-    std::unique_ptr<IStreamGenerator> manual_gen = std::make_unique<IStreamGenerator>();
-    VariantExercise exercise(manual_gen.get(), n);
+    std::cout << "Enter matrix rows: ";
+    int rows = positive_input();
 
-    std::cout << "Original array: " << exercise.get_matrix().to_string() << std::endl;
+    std::cout << "Enter matrix columns: ";
+    int columns = positive_input();
 
-    exercise.Task1();
-    std::cout << "After Task 1: " << exercise.get_matrix().to_string() << std::endl;
+    Matrix<int> matrix(rows, columns);
 
-    exercise.Task2();
-    std::cout << "After Task 2: " << exercise.get_matrix().to_string() << std::endl;
+    std::cout << "\nEnter matrix elements " << rows << "x" << columns << ":\n";
 
-    Matrix result = exercise.Task3();
-    std::cout << "Task 3 result: " << result.to_string() << std::endl;
+    for (int i = 0; i < rows; ++i) {
+        for (int j = 0; j < columns; ++j) {
+            std::cout << "Element [" << i << "][" << j << "]: ";
+            matrix(i, j) = input();
+        }
+    }
+
+    std::cout << "\nOriginal matrix:\n";
+    std::cout << matrix << std::endl;
+
+    std::cout << "TASK 1: Replace last positive element with second element...\n";
+    matrix.replaceLastPositiveWithSecond();
+    std::cout << "Result after task 1:\n";
+    std::cout << matrix << std::endl;
+
+    std::cout << "TASK 2: Insert max element before elements containing digit 1...\n";
+    matrix.insertMaxBeforeOnes();
+    std::cout << "Result after task 2:\n";
+    std::cout << matrix << std::endl;
+
+    std::cout << "TASK 3: Create new matrix by rules...\n";
+    Matrix<int> newMatrix = matrix.createNewArray();
+    std::cout << "New matrix (task 3 result):\n";
+    std::cout << newMatrix << std::endl;
 }
 
-void demonstrate_random() {
-    std::cout << "Enter array size: ";
-    int n = positive_input();
+static void demonstrate_random() {
+    std::cout << "=== RANDOM NUMBER MODE ===\n\n";
+
+    std::cout << "Enter matrix rows: ";
+    int rows = positive_input();
+
+    std::cout << "Enter matrix columns: ";
+    int columns = positive_input();
 
     std::cout << "Enter min value: ";
     int min = input();
+
     std::cout << "Enter max value: ";
     int max = input();
 
@@ -59,25 +84,41 @@ void demonstrate_random() {
         return;
     }
 
-    std::unique_ptr<RandomGenerator> random_gen = std::make_unique<RandomGenerator>(min, max);
-    VariantExercise exercise(random_gen.get(), n);
+    srand(static_cast<unsigned int>(time(0)));
+    Matrix<int> matrix(rows, columns);
 
-    std::cout << "Original array: " << exercise.get_matrix().to_string() << std::endl;
+    for (int i = 0; i < rows; ++i) {
+        for (int j = 0; j < columns; ++j) {
+            matrix(i, j) = min + rand() % (max - min + 1);
+        }
+    }
 
-    exercise.Task1();
-    std::cout << "After Task 1: " << exercise.get_matrix().to_string() << std::endl;
+    std::cout << "\nOriginal matrix (filled with random numbers):\n";
+    std::cout << matrix << std::endl;
 
-    exercise.Task2();
-    std::cout << "After Task 2: " << exercise.get_matrix().to_string() << std::endl;
+    std::cout << "TASK 1: Replace last positive element with second element...\n";
+    matrix.replaceLastPositiveWithSecond();
+    std::cout << "Result after task 1:\n";
+    std::cout << matrix << std::endl;
 
-    Matrix result = exercise.Task3();
-    std::cout << "Task 3 result: " << result.to_string() << std::endl;
+    std::cout << "TASK 2: Insert max element before elements containing digit 1...\n";
+    matrix.insertMaxBeforeOnes();
+    std::cout << "Result after task 2:\n";
+    std::cout << matrix << std::endl;
+
+    std::cout << "TASK 3: Create new matrix by rules...\n";
+    Matrix<int> newMatrix = matrix.createNewArray();
+    std::cout << "New matrix (task 3 result):\n";
+    std::cout << newMatrix << std::endl;
 }
 
 int main() {
-    std::cout << "Choose input method:\n";
-    std::cout << "1 - manually\n";
-    std::cout << "2 - random\n";
+    std::cout << "MATRIX PROGRAM\n";
+    std::cout << "Variant 13: Three matrix tasks\n\n";
+
+    std::cout << "Choose mode:\n";
+    std::cout << "1 - Manual input\n";
+    std::cout << "2 - Random numbers\n";
     std::cout << "Your choice: ";
 
     int choice = input();
@@ -94,5 +135,6 @@ int main() {
         return 1;
     }
 
+    std::cout << "\nProgram completed successfully!\n";
     return 0;
 }
