@@ -1,20 +1,16 @@
 #pragma once
 #include "Exercise.h"
 
-namespace miit_algebra
+namespace MATRIX
 {
-    class VariantExercise : public Exercise
+    template <class Type>
+    class VariantExercise : public Exercise<Type>
     {
     public:
-        VariantExercise(Generator* gen, size_t size);
+        VariantExercise(Generator<Type>* gen, size_t rows, size_t columns);
 
         void Task1() override;
         void Task2() override;
-        Matrix Task3() override;
-
-    private:
-        bool contains_digit_one(int number) const;
-        size_t find_last_positive() const;
-        int find_max() const;
+        Matrix<Type> Task3() override;
     };
 }
