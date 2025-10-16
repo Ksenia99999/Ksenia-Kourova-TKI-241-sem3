@@ -1,11 +1,12 @@
 #pragma once
 
-namespace miit_algebra
+namespace MATRIX
 {
+    template <class Type>
     class Generator
     {
     public:
         virtual ~Generator() = default;
-        virtual int generate() = 0;
+        virtual Type generate() = 0;
     };
 }
