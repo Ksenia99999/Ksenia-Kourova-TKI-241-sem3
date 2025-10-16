@@ -1,15 +1,19 @@
 #include "IStreamGenerator.h"
 
-namespace miit_algebra
+namespace MATRIX
 {
-    IStreamGenerator::IStreamGenerator(std::istream& in) : in(in)
+    template <class Type>
+    IStreamGenerator<Type>::IStreamGenerator(std::istream& in) : in(in)
     {
     }
 
-    int IStreamGenerator::generate()
+    template <class Type>
+    Type IStreamGenerator<Type>::generate()
     {
-        int value;
+        Type value;
         in >> value;
         return value;
     }
+
+    template class IStreamGenerator<int>;
 }
