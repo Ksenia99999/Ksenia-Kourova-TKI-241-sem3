@@ -2,22 +2,23 @@
 #include "Matrix.h"
 #include "Generator.h"
 
-namespace miit_algebra
+namespace MATRIX
 {
+    template <class Type>
     class Exercise
     {
     protected:
-        Matrix matrix;
-        Generator* generator;
+        Matrix<Type> matrix;
+        Generator<Type>* generator;
 
     public:
-        Exercise(Generator* gen, size_t size);
+        Exercise(Generator<Type>* gen, size_t rows, size_t columns);
         virtual ~Exercise() = default;
 
         virtual void Task1() = 0;
         virtual void Task2() = 0;
-        virtual Matrix Task3() = 0;
+        virtual Matrix<Type> Task3() = 0;
 
-        Matrix get_matrix() const;
+        Matrix<Type> get_matrix() const;
     };
 }
