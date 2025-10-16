@@ -2,9 +2,10 @@
 #include "Generator.h"
 #include <random>
 
-namespace miit_algebra
+namespace MATRIX
 {
-    class RandomGenerator : public Generator
+    template <class Type>
+    class RandomGenerator : public Generator<Type>
     {
     private:
         std::mt19937 generator;
@@ -12,6 +13,6 @@ namespace miit_algebra
 
     public:
         RandomGenerator(int min, int max);
-        int generate() override;
+        Type generate() override;
     };
 }
