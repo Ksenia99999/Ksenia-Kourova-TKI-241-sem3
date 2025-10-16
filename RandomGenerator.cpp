@@ -1,14 +1,18 @@
 #include "RandomGenerator.h"
 
-namespace miit_algebra
+namespace MATRIX
 {
-    RandomGenerator::RandomGenerator(int min, int max)
+    template <class Type>
+    RandomGenerator<Type>::RandomGenerator(int min, int max)
         : generator(std::random_device()()), distribution(min, max)
     {
     }
 
-    int RandomGenerator::generate()
+    template <class Type>
+    Type RandomGenerator<Type>::generate()
     {
-        return distribution(generator);
+        return static_cast<Type>(distribution(generator));
     }
+
+    template class RandomGenerator<int>;
 }
