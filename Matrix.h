@@ -1,43 +1,44 @@
 #pragma once
 #include <iostream>
-#include <utility>
+#include <vector>
 
-namespace MATRIX
+namespace MATRIX 
 {
     template <class Type>
     class Matrix
     {
     private:
-        size_t rows;
-        size_t columns;
-        Type** array;
+        std::vector<Type> data; 
 
     public:
         // Конструкторы и деструктор
         Matrix();
-        Matrix(const size_t rows, const size_t columns);
+        Matrix(const size_t size);
         Matrix(const Matrix& matrix);
-        ~Matrix();
+        ~Matrix() = default;
 
         // Операторы
         Matrix operator=(const Matrix& other);
         Matrix operator+(const Matrix& other) const;
         Matrix operator-(const Matrix& other) const;
         Matrix operator*(const double coef) const;
-        Matrix operator*(const Matrix& other) const;
 
         // Дружественные операторы
-        template <class T>
-        friend Matrix<T> operator*(const double coef, const Matrix<T>& other);
+        friend Matrix operator*(const double coef, const Matrix& other) {
+            return other * coef;
+        }
 
-        template <class T>
-        friend std::ostream& operator<<(std::ostream& os, const Matrix<T>& other);
+        friend std::ostream& operator<<(std::ostream& os, const Matrix& other) {
+            for (size_t i = 0; i < other.data.size(); ++i) {
+                os << other.data[i] << " ";
+            }
+            return os;
+        }
 
         // Методы доступа
-        size_t getRows() const { return rows; }
-        size_t getColumns() const { return columns; }
-        Type& operator()(size_t row, size_t col) { return array[row][col]; }
-        const Type& operator()(size_t row, size_t col) const { return array[row][col]; }
+        size_t getSize() const { return data.size(); }
+        Type& operator[](size_t index) { return data[index]; }
+        const Type& operator[](size_t index) const { return data[index]; }
 
         // Методы для задач
         void replaceLastPositiveWithSecond();
@@ -47,16 +48,7 @@ namespace MATRIX
     private:
         // Вспомогательные методы
         bool containsDigitOne(Type number) const;
-        std::pair<size_t, size_t> findLastPositive() const;
+        size_t findLastPositive() const;
         Type findMax() const;
-        void initializeMatrix();
-        void cleanupMatrix();
     };
-
-    // Декларации дружественных функций
-    template <class Type>
-    Matrix<Type> operator*(const double coef, const Matrix<Type>& other);
-
-    template <class Type>
-    std::ostream& operator<<(std::ostream& os, const Matrix<Type>& other);
 }
