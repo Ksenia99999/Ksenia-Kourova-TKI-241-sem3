@@ -3,27 +3,27 @@
 namespace MATRIX
 {
     template <class Type>
-    VariantExercise<Type>::VariantExercise(Generator<Type>* gen, size_t rows, size_t columns)
-        : Exercise<Type>(gen, rows, columns)
+    VariantExercise<Type>::VariantExercise(Generator<Type>* gen, size_t size) 
+        : Exercise<Type>(gen, size) 
     {
     }
-
+    
     template <class Type>
     void VariantExercise<Type>::Task1()
     {
-        this->matrix.replaceLastPositiveWithSecond();
+        this->array.replaceLastPositiveWithSecond();
     }
-
+    
     template <class Type>
     void VariantExercise<Type>::Task2()
     {
-        this->matrix.insertMaxBeforeOnes();
+        this->array.insertMaxBeforeOnes();
     }
-
+    
     template <class Type>
     Matrix<Type> VariantExercise<Type>::Task3()
     {
-        return this->matrix.createNewArray();
+        return this->array.createNewArray();
     }
 
     template class VariantExercise<int>;
