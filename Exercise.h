@@ -8,17 +8,17 @@ namespace MATRIX
     class Exercise
     {
     protected:
-        Matrix<Type> matrix;
+        Matrix<Type> array;
         Generator<Type>* generator;
-
+        
     public:
-        Exercise(Generator<Type>* gen, size_t rows, size_t columns);
+        Exercise(Generator<Type>* gen, size_t size);
         virtual ~Exercise() = default;
-
+        
         virtual void Task1() = 0;
         virtual void Task2() = 0;
         virtual Matrix<Type> Task3() = 0;
-
-        Matrix<Type> get_matrix() const;
+        
+        Matrix<Type> get_array() const;
     };
 }
