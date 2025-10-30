@@ -6,49 +6,31 @@
 namespace MATRIX
 {
     template <class Type>
-    Matrix<Type>::Matrix() : rows(0), columns(0), array(nullptr) {}
-
-    template <class Type>
-    Matrix<Type>::Matrix(const size_t rows, const size_t columns)
-        : rows(rows), columns(columns)
+    Matrix<Type>::Matrix() 
     {
-        initializeMatrix();
+        // data инициализируется пустым вектором по умолчанию
     }
 
     template <class Type>
-    Matrix<Type>::Matrix(const Matrix& matrix)
+    Matrix<Type>::Matrix(const size_t size) 
     {
-        this->rows = matrix.rows;
-        this->columns = matrix.columns;
-        initializeMatrix();
-
-        for (size_t i = 0; i < rows; ++i) {
-            for (size_t j = 0; j < columns; ++j) {
-                array[i][j] = matrix.array[i][j];
-            }
+        data.resize(size);  
+        for (size_t i = 0; i < size; ++i) {
+            data[i] = Type();  
         }
     }
 
     template <class Type>
-    Matrix<Type>::~Matrix()
+    Matrix<Type>::Matrix(const Matrix& matrix)
+        : data(matrix.data)  
     {
-        cleanupMatrix();
     }
 
     template <class Type>
     Matrix<Type> Matrix<Type>::operator=(const Matrix& other)
     {
         if (this != &other) {
-            cleanupMatrix();
-            rows = other.rows;
-            columns = other.columns;
-            initializeMatrix();
-
-            for (size_t i = 0; i < rows; ++i) {
-                for (size_t j = 0; j < columns; ++j) {
-                    array[i][j] = other.array[i][j];
-                }
-            }
+            data = other.data; 
         }
         return *this;
     }
@@ -56,15 +38,13 @@ namespace MATRIX
     template <class Type>
     Matrix<Type> Matrix<Type>::operator+(const Matrix& other) const
     {
-        if (rows != other.rows || columns != other.columns) {
-            throw std::invalid_argument("Matrix dimensions must match for addition");
+        if (data.size() != other.data.size()) {
+            throw std::invalid_argument("Array sizes must match for addition");
         }
 
-        Matrix result(rows, columns);
-        for (size_t i = 0; i < rows; ++i) {
-            for (size_t j = 0; j < columns; ++j) {
-                result.array[i][j] = array[i][j] + other.array[i][j];
-            }
+        Matrix result(data.size());
+        for (size_t i = 0; i < data.size(); ++i) {
+            result.data[i] = data[i] + other.data[i];
         }
         return result;
     }
@@ -72,15 +52,13 @@ namespace MATRIX
     template <class Type>
     Matrix<Type> Matrix<Type>::operator-(const Matrix& other) const
     {
-        if (rows != other.rows || columns != other.columns) {
-            throw std::invalid_argument("Matrix dimensions must match for subtraction");
+        if (data.size() != other.data.size()) {
+            throw std::invalid_argument("Array sizes must match for subtraction");
         }
 
-        Matrix result(rows, columns);
-        for (size_t i = 0; i < rows; ++i) {
-            for (size_t j = 0; j < columns; ++j) {
-                result.array[i][j] = array[i][j] - other.array[i][j];
-            }
+        Matrix result(data.size());
+        for (size_t i = 0; i < data.size(); ++i) {
+            result.data[i] = data[i] - other.data[i];
         }
         return result;
     }
@@ -88,30 +66,9 @@ namespace MATRIX
     template <class Type>
     Matrix<Type> Matrix<Type>::operator*(const double coef) const
     {
-        Matrix result(rows, columns);
-        for (size_t i = 0; i < rows; ++i) {
-            for (size_t j = 0; j < columns; ++j) {
-                result.array[i][j] = static_cast<Type>(array[i][j] * coef);
-            }
-        }
-        return result;
-    }
-
-    template <class Type>
-    Matrix<Type> Matrix<Type>::operator*(const Matrix& other) const
-    {
-        if (columns != other.rows) {
-            throw std::invalid_argument("Matrix dimensions must match for multiplication");
-        }
-
-        Matrix result(rows, other.columns);
-        for (size_t i = 0; i < rows; ++i) {
-            for (size_t j = 0; j < other.columns; ++j) {
-                result.array[i][j] = Type();
-                for (size_t k = 0; k < columns; ++k) {
-                    result.array[i][j] += array[i][k] * other.array[k][j];
-                }
-            }
+        Matrix result(data.size());
+        for (size_t i = 0; i < data.size(); ++i) {
+            result.data[i] = static_cast<Type>(data[i] * coef);
         }
         return result;
     }
@@ -119,9 +76,9 @@ namespace MATRIX
     template <class Type>
     void Matrix<Type>::replaceLastPositiveWithSecond()
     {
-        auto lastPositive = findLastPositive();
-        if (lastPositive.first != static_cast<size_t>(-1) && rows > 0 && columns > 1) {
-            array[lastPositive.first][lastPositive.second] = array[0][1];
+        size_t lastPositive = findLastPositive();
+        if (lastPositive != static_cast<size_t>(-1) && data.size() > 1) {
+            data[lastPositive] = data[1];  // Заменяем на второй элемент
         }
     }
 
@@ -129,11 +86,9 @@ namespace MATRIX
     void Matrix<Type>::insertMaxBeforeOnes()
     {
         Type maxVal = findMax();
-        for (size_t i = 0; i < rows; ++i) {
-            for (size_t j = 0; j < columns; ++j) {
-                if (containsDigitOne(array[i][j])) {
-                    array[i][j] = maxVal;
-                }
+        for (size_t i = 0; i < data.size(); ++i) {
+            if (containsDigitOne(data[i])) {
+                data[i] = maxVal;
             }
         }
     }
@@ -141,19 +96,13 @@ namespace MATRIX
     template <class Type>
     Matrix<Type> Matrix<Type>::createNewArray() const
     {
-        Matrix result(rows, columns);
-        size_t elementCounter = 0;
-
-        for (size_t i = 0; i < rows; ++i) {
-            for (size_t j = 0; j < columns; ++j) {
-                elementCounter++;
-
-                if (elementCounter % 3 == 0) {
-                    result.array[i][j] = static_cast<Type>(elementCounter) * array[i][j];
-                }
-                else {
-                    result.array[i][j] = -array[i][j] * static_cast<Type>(elementCounter + 1);
-                }
+        Matrix result(data.size());
+        
+        for (size_t i = 0; i < data.size(); ++i) {
+            if ((i + 1) % 3 == 0) {  // Каждый третий элемент (индексация с 1)
+                result.data[i] = static_cast<Type>(i) * data[i];
+            } else {  // Остальные элементы
+                result.data[i] = -data[i] * static_cast<Type>(i + 1);
             }
         }
         return result;
@@ -171,106 +120,28 @@ namespace MATRIX
     }
 
     template <class Type>
-    std::pair<size_t, size_t> Matrix<Type>::findLastPositive() const
+    size_t Matrix<Type>::findLastPositive() const
     {
-        for (size_t i = rows; i > 0; --i) {
-            for (size_t j = columns; j > 0; --j) {
-                size_t row = i - 1;
-                size_t col = j - 1;
-                if (array[row][col] > 0) {
-                    return { row, col };
-                }
+        for (size_t i = data.size(); i > 0; --i) {
+            size_t index = i - 1;
+            if (data[index] > 0) {
+                return index;
             }
         }
-        return { static_cast<size_t>(-1), static_cast<size_t>(-1) };
+        return static_cast<size_t>(-1);
     }
 
     template <class Type>
     Type Matrix<Type>::findMax() const
     {
-        Type maxVal = array[0][0];
-        for (size_t i = 0; i < rows; ++i) {
-            for (size_t j = 0; j < columns; ++j) {
-                if (array[i][j] > maxVal) {
-                    maxVal = array[i][j];
-                }
+        Type maxVal = data[0];
+        for (size_t i = 1; i < data.size(); ++i) {
+            if (data[i] > maxVal) {
+                maxVal = data[i];
             }
         }
         return maxVal;
     }
 
-    template <class Type>
-    void Matrix<Type>::initializeMatrix()
-    {
-        array = new Type * [rows];
-        for (size_t i = 0; i < rows; ++i) {
-            array[i] = new Type[columns];
-            for (size_t j = 0; j < columns; ++j) {
-                array[i][j] = Type();
-            }
-        }
-    }
-
-    template <class Type>
-    void Matrix<Type>::cleanupMatrix()
-    {
-        if (array != nullptr) {
-            for (size_t i = 0; i < rows; ++i) {
-                delete[] array[i];
-            }
-            delete[] array;
-            array = nullptr;
-        }
-        rows = 0;
-        columns = 0;
-    }
-
-    template <class Type>
-    Matrix<Type> operator*(const double coef, const Matrix<Type>& other)
-    {
-        return other * coef;
-    }
-
-    template <class Type>
-    std::ostream& operator<<(std::ostream& os, const Matrix<Type>& other)
-    {
-        for (size_t i = 0; i < other.rows; ++i) {
-            for (size_t j = 0; j < other.columns; ++j) {
-                os << other.array[i][j] << " ";
-            }
-            os << std::endl;
-        }
-        return os;
-    }
-
     template class Matrix<int>;
-
-    // Конструкторы и деструктор
-    template Matrix<int>::Matrix();
-    template Matrix<int>::Matrix(const size_t rows, const size_t columns);
-    template Matrix<int>::Matrix(const Matrix<int>& matrix);
-    template Matrix<int>::~Matrix();
-
-    // Операторы
-    template Matrix<int> Matrix<int>::operator=(const Matrix<int>& other);
-    template Matrix<int> Matrix<int>::operator+(const Matrix<int>& other) const;
-    template Matrix<int> Matrix<int>::operator-(const Matrix<int>& other) const;
-    template Matrix<int> Matrix<int>::operator*(const double coef) const;
-    template Matrix<int> Matrix<int>::operator*(const Matrix<int>& other) const;
-
-    // Методы для задач
-    template void Matrix<int>::replaceLastPositiveWithSecond();
-    template void Matrix<int>::insertMaxBeforeOnes();
-    template Matrix<int> Matrix<int>::createNewArray() const;
-
-    // Вспомогательные методы
-    template bool Matrix<int>::containsDigitOne(int number) const;
-    template std::pair<size_t, size_t> Matrix<int>::findLastPositive() const;
-    template int Matrix<int>::findMax() const;
-    template void Matrix<int>::initializeMatrix();
-    template void Matrix<int>::cleanupMatrix();
-
-    // Дружественные функции
-    template Matrix<int> operator*(const double coef, const Matrix<int>& other);
-    template std::ostream& operator<<(std::ostream& os, const Matrix<int>& other);
 }
