@@ -56,7 +56,7 @@ namespace MATRIX
     template <class Type>
     void Task3Exercise<Type>::execute()
     {
-        Task3();
+        task3Result = Task3();
     }
 
     template <class Type>
