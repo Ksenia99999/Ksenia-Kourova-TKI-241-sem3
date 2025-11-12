@@ -45,4 +45,8 @@ namespace MATRIX
         void insertMaxBeforeOnes();
         Matrix createNewArray() const;
     };
+
+    // Явные объявления дружественных функций
+    template <class Type>
+    std::ostream& operator<<(std::ostream& os, const Matrix<Type>& other);
 }
