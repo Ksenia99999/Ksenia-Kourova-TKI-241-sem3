@@ -189,4 +189,6 @@ namespace MATRIX
     }
 
     template class Matrix<int>;
+    
+    template std::ostream& operator<<(std::ostream& os, const Matrix<int>& other);
 }
