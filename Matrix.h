@@ -2,13 +2,18 @@
 #include <iostream>
 #include <vector>
 
-namespace MATRIX 
+namespace MATRIX
 {
     template <class Type>
     class Matrix
     {
     private:
-        std::vector<Type> data; 
+        std::vector<Type> data;
+
+        // Вспомогательные методы
+        bool containsDigitOne(Type number) const;
+        size_t findLastPositive() const;
+        Type findMax() const;
 
     public:
         // Конструкторы и деструктор
@@ -24,31 +29,20 @@ namespace MATRIX
         Matrix operator*(const double coef) const;
 
         // Дружественные операторы
-        friend Matrix operator*(const double coef, const Matrix& other) {
-            return other * coef;
-        }
-
-        friend std::ostream& operator<<(std::ostream& os, const Matrix& other) {
-            for (size_t i = 0; i < other.data.size(); ++i) {
-                os << other.data[i] << " ";
-            }
-            return os;
-        }
+        template <class T>
+        friend Matrix<T> operator*(const double coef, const Matrix<T>& other);
+        
+        template <class T>
+        friend std::ostream& operator<<(std::ostream& os, const Matrix<T>& other);
 
         // Методы доступа
-        size_t getSize() const { return data.size(); }
-        Type& operator[](size_t index) { return data[index]; }
-        const Type& operator[](size_t index) const { return data[index]; }
+        size_t getSize() const;
+        Type& operator[](size_t index);
+        const Type& operator[](size_t index) const;
 
         // Методы для задач
         void replaceLastPositiveWithSecond();
         void insertMaxBeforeOnes();
         Matrix createNewArray() const;
-
-    private:
-        // Вспомогательные методы
-        bool containsDigitOne(Type number) const;
-        size_t findLastPositive() const;
-        Type findMax() const;
     };
 }
