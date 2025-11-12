@@ -5,32 +5,33 @@
 
 namespace MATRIX
 {
+    // Конструкторы
     template <class Type>
-    Matrix<Type>::Matrix() 
+    Matrix<Type>::Matrix()
     {
-        // data инициализируется пустым вектором по умолчанию
     }
 
     template <class Type>
-    Matrix<Type>::Matrix(const size_t size) 
+    Matrix<Type>::Matrix(const size_t size)
     {
-        data.resize(size);  
+        data.resize(size);
         for (size_t i = 0; i < size; ++i) {
-            data[i] = Type();  
+            data[i] = Type();
         }
     }
 
     template <class Type>
     Matrix<Type>::Matrix(const Matrix& matrix)
-        : data(matrix.data)  
+        : data(matrix.data)
     {
     }
 
+    // Операторы
     template <class Type>
     Matrix<Type> Matrix<Type>::operator=(const Matrix& other)
     {
         if (this != &other) {
-            data = other.data; 
+            data = other.data;
         }
         return *this;
     }
@@ -73,12 +74,38 @@ namespace MATRIX
         return result;
     }
 
+    // Методы доступа
+    template <class Type>
+    size_t Matrix<Type>::getSize() const
+    {
+        return data.size();
+    }
+
+    template <class Type>
+    Type& Matrix<Type>::operator[](size_t index)
+    {
+        if (index >= data.size()) {
+            throw std::out_of_range("Index out of range");
+        }
+        return data[index];
+    }
+
+    template <class Type>
+    const Type& Matrix<Type>::operator[](size_t index) const
+    {
+        if (index >= data.size()) {
+            throw std::out_of_range("Index out of range");
+        }
+        return data[index];
+    }
+
+    // Методы для задач
     template <class Type>
     void Matrix<Type>::replaceLastPositiveWithSecond()
     {
         size_t lastPositive = findLastPositive();
         if (lastPositive != static_cast<size_t>(-1) && data.size() > 1) {
-            data[lastPositive] = data[1];  // Заменяем на второй элемент
+            data[lastPositive] = data[1];
         }
     }
 
@@ -97,17 +124,19 @@ namespace MATRIX
     Matrix<Type> Matrix<Type>::createNewArray() const
     {
         Matrix result(data.size());
-        
+
         for (size_t i = 0; i < data.size(); ++i) {
-            if ((i + 1) % 3 == 0) {  // Каждый третий элемент (индексация с 1)
+            if ((i + 1) % 3 == 0) {
                 result.data[i] = static_cast<Type>(i) * data[i];
-            } else {  // Остальные элементы
+            }
+            else {
                 result.data[i] = -data[i] * static_cast<Type>(i + 1);
             }
         }
         return result;
     }
 
+    // Вспомогательные методы
     template <class Type>
     bool Matrix<Type>::containsDigitOne(Type number) const
     {
@@ -141,6 +170,22 @@ namespace MATRIX
             }
         }
         return maxVal;
+    }
+
+    // Реализация дружественных функций
+    template <class Type>
+    Matrix<Type> operator*(const double coef, const Matrix<Type>& other)
+    {
+        return other * coef;
+    }
+
+    template <class Type>
+    std::ostream& operator<<(std::ostream& os, const Matrix<Type>& other)
+    {
+        for (size_t i = 0; i < other.data.size(); ++i) {
+            os << other.data[i] << " ";
+        }
+        return os;
     }
 
     template class Matrix<int>;
