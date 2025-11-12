@@ -9,10 +9,10 @@ namespace MATRIX
     {
     public:
         VariantExercise(Generator<Type>* gen, size_t size);
-        void execute() override = 0;
+        virtual void execute() = 0;
     };
 
-    // Конкретные реализации
+    // Конкретные реализации для каждой задачи
     template <class Type>
     class Task1Exercise : public VariantExercise<Type>
     {
@@ -38,11 +38,16 @@ namespace MATRIX
     template <class Type>
     class Task3Exercise : public VariantExercise<Type>
     {
+    private:
+        Matrix<Type> task3Result;
+        
     public:
         Task3Exercise(Generator<Type>* gen, size_t size);
         void execute() override;
         void Task1() override {}
         void Task2() override {}
         Matrix<Type> Task3() override;
+        
+        Matrix<Type> getTask3Result() const { return task3Result; }
     };
 }
