@@ -76,32 +76,16 @@ static void demonstrate_manual() {
 
     std::cout << "\nOriginal array: " << array << std::endl;
 
-    // Создаем упражнения для каждой задачи
-    ConstGenerator<int> constGen(0);
-    
-    // Задача 1
-    Task1Exercise<int> task1(&constGen, 0);
-    Matrix<int> temp1 = task1.get_array();
-    temp1 = array;
     std::cout << "TASK 1: Replace last positive element with second element...\n";
-    task1.execute();
-    std::cout << "Result after task 1: " << task1.get_array() << std::endl;
+    array.replaceLastPositiveWithSecond();
+    std::cout << "Result after task 1: " << array << std::endl;
 
-    // Задача 2
-    Task2Exercise<int> task2(&constGen, 0);
-    Matrix<int> temp2 = task2.get_array();
-    temp2 = task1.get_array();
     std::cout << "TASK 2: Insert max element before elements containing digit 1...\n";
-    task2.execute();
-    std::cout << "Result after task 2: " << task2.get_array() << std::endl;
+    array.insertMaxBeforeOnes();
+    std::cout << "Result after task 2: " << array << std::endl;
 
-    // Задача 3
-    Task3Exercise<int> task3(&constGen, 0);
-    Matrix<int> temp3 = task3.get_array();
-    temp3 = task2.get_array();
     std::cout << "TASK 3: Create new array by rules...\n";
-    task3.execute();
-    Matrix<int> newArray = task3.getTask3Result();
+    Matrix<int> newArray = array.createNewArray();
     std::cout << "New array (task 3 result): " << newArray << std::endl;
 }
 
@@ -131,31 +115,15 @@ static void demonstrate_random() {
 
     std::cout << "\nOriginal array (filled with random numbers): " << array << std::endl;
 
-    // Создаем упражнения для каждой задачи
-    ConstGenerator<int> constGen(0);
-    
-    // Задача 1
-    Task1Exercise<int> task1(&constGen, 0);
-    Matrix<int> temp1 = task1.get_array();
-    temp1 = array;
     std::cout << "TASK 1: Replace last positive element with second element...\n";
-    task1.execute();
-    std::cout << "Result after task 1: " << task1.get_array() << std::endl;
+    array.replaceLastPositiveWithSecond();
+    std::cout << "Result after task 1: " << array << std::endl;
 
-    // Задача 2
-    Task2Exercise<int> task2(&constGen, 0);
-    Matrix<int> temp2 = task2.get_array();
-    temp2 = task1.get_array();
     std::cout << "TASK 2: Insert max element before elements containing digit 1...\n";
-    task2.execute();
-    std::cout << "Result after task 2: " << task2.get_array() << std::endl;
+    array.insertMaxBeforeOnes();
+    std::cout << "Result after task 2: " << array << std::endl;
 
-    // Задача 3
-    Task3Exercise<int> task3(&constGen, 0);
-    Matrix<int> temp3 = task3.get_array();
-    temp3 = task2.get_array();
     std::cout << "TASK 3: Create new array by rules...\n";
-    task3.execute();
-    Matrix<int> newArray = task3.getTask3Result();
+    Matrix<int> newArray = array.createNewArray();
     std::cout << "New array (task 3 result): " << newArray << std::endl;
 }
