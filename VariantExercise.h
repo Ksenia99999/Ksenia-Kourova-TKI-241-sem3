@@ -3,50 +3,41 @@
 
 namespace MATRIX
 {
-    // Базовый класс для упражнений
     template <class Type>
     class VariantExercise : public Exercise<Type>
     {
     public:
         VariantExercise(Generator<Type>* gen, size_t size);
-        virtual void execute() = 0;
     };
 
-    // Конкретные реализации для каждой задачи
+    // Класс для ЗАДАЧИ 1
     template <class Type>
     class Task1Exercise : public VariantExercise<Type>
     {
     public:
         Task1Exercise(Generator<Type>* gen, size_t size);
-        void execute() override;
-        void Task1() override;
-        void Task2() override {}
-        Matrix<Type> Task3() override { return Matrix<Type>(); }
+        void execute() override;  
     };
 
+    // Класс для ЗАДАЧИ 2
     template <class Type>
     class Task2Exercise : public VariantExercise<Type>
     {
     public:
         Task2Exercise(Generator<Type>* gen, size_t size);
-        void execute() override;
-        void Task1() override {}
-        void Task2() override;
-        Matrix<Type> Task3() override { return Matrix<Type>(); }
+        void execute() override;  
     };
 
+    // Класс для ЗАДАЧИ 3
     template <class Type>
     class Task3Exercise : public VariantExercise<Type>
     {
     private:
         Matrix<Type> task3Result;
-        
+
     public:
         Task3Exercise(Generator<Type>* gen, size_t size);
-        void execute() override;
-        void Task1() override {}
-        void Task2() override {}
-        Matrix<Type> Task3() override;
+        void execute() override; 
         
         Matrix<Type> getTask3Result() const { return task3Result; }
     };
