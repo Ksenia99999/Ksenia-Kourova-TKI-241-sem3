@@ -7,15 +7,22 @@
 
 using namespace MATRIX;
 
+// Режимы работы
 enum Choose {
     MANUALLY = 1,
-    RANDOM
+    RANDOM,
+    CONSTANT  
 };
+
+// Константные данные для тестирования
+const int CONSTANT_DATA[] = {5, -3, 10, 15, -8, 20};
+const size_t CONSTANT_SIZE = 6;
 
 static int input();
 static int positive_input();
 static void demonstrate_manual();
 static void demonstrate_random();
+static void demonstrate_constant();  // Новая функция для константного режима
 
 int main() {
     std::cout << "ARRAY PROGRAM\n";
@@ -23,7 +30,8 @@ int main() {
 
     std::cout << "Choose mode:\n";
     std::cout << MANUALLY << " - Manual input\n";
-    std::cout << RANDOM << " - Random numbers\n"; 
+    std::cout << RANDOM << " - Random numbers\n";
+    std::cout << CONSTANT << " - Constant data\n";  
     std::cout << "Your choice: ";
 
     int choice = input();
@@ -34,6 +42,9 @@ int main() {
         break;
     case RANDOM:
         demonstrate_random();
+        break;
+    case CONSTANT:  // Новый case
+        demonstrate_constant();
         break;
     default:
         std::cout << "Error: invalid choice\n";
@@ -59,6 +70,7 @@ static int positive_input() {
     return number;
 }
 
+// Ручной ввод
 static void demonstrate_manual() {
     std::cout << "=== MANUAL INPUT MODE ===\n\n";
 
@@ -68,7 +80,6 @@ static void demonstrate_manual() {
     Matrix<int> array(size);
 
     std::cout << "\nEnter " << size << " elements:\n";
-
     for (int i = 0; i < size; ++i) {
         std::cout << "Element [" << i << "]: ";
         array[i] = input();
@@ -76,6 +87,7 @@ static void demonstrate_manual() {
 
     std::cout << "\nOriginal array: " << array << std::endl;
 
+    // Выполняем все три задачи последовательно
     std::cout << "TASK 1: Replace last positive element with second element...\n";
     array.replaceLastPositiveWithSecond();
     std::cout << "Result after task 1: " << array << std::endl;
@@ -89,6 +101,7 @@ static void demonstrate_manual() {
     std::cout << "New array (task 3 result): " << newArray << std::endl;
 }
 
+// Случайные числа
 static void demonstrate_random() {
     std::cout << "=== RANDOM NUMBER MODE ===\n\n";
 
@@ -115,6 +128,33 @@ static void demonstrate_random() {
 
     std::cout << "\nOriginal array (filled with random numbers): " << array << std::endl;
 
+    // Выполняем все три задачи последовательно
+    std::cout << "TASK 1: Replace last positive element with second element...\n";
+    array.replaceLastPositiveWithSecond();
+    std::cout << "Result after task 1: " << array << std::endl;
+
+    std::cout << "TASK 2: Insert max element before elements containing digit 1...\n";
+    array.insertMaxBeforeOnes();
+    std::cout << "Result after task 2: " << array << std::endl;
+
+    std::cout << "TASK 3: Create new array by rules...\n";
+    Matrix<int> newArray = array.createNewArray();
+    std::cout << "New array (task 3 result): " << newArray << std::endl;
+}
+
+// Константный режим
+static void demonstrate_constant() {
+    std::cout << "=== CONSTANT DATA MODE ===\n\n";
+
+    // Создаем массив и заполняем константными данными
+    Matrix<int> array(CONSTANT_SIZE);
+    for (size_t i = 0; i < CONSTANT_SIZE; ++i) {
+        array[i] = CONSTANT_DATA[i];
+    }
+
+    std::cout << "Original array: " << array << std::endl;
+
+    // Выполняем все три задачи последовательно
     std::cout << "TASK 1: Replace last positive element with second element...\n";
     array.replaceLastPositiveWithSecond();
     std::cout << "Result after task 1: " << array << std::endl;
