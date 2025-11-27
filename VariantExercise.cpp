@@ -8,61 +8,34 @@ namespace MATRIX
     {
     }
 
-    // Task1Exercise
     template <class Type>
     Task1Exercise<Type>::Task1Exercise(Generator<Type>* gen, size_t size)
-        : VariantExercise<Type>(gen, size)
-    {
-    }
+        : VariantExercise<Type>(gen, size) {}
 
     template <class Type>
     void Task1Exercise<Type>::execute()
     {
-        Task1();
+        this->array.replaceLastPositiveWithSecond();  // Задача 1
     }
 
-    template <class Type>
-    void Task1Exercise<Type>::Task1()
-    {
-        this->array.replaceLastPositiveWithSecond();
-    }
-
-    // Task2Exercise
     template <class Type>
     Task2Exercise<Type>::Task2Exercise(Generator<Type>* gen, size_t size)
-        : VariantExercise<Type>(gen, size)
-    {
-    }
+        : VariantExercise<Type>(gen, size) {}
 
     template <class Type>
     void Task2Exercise<Type>::execute()
     {
-        Task2();
+        this->array.insertMaxBeforeOnes();  // Задача 2
     }
 
-    template <class Type>
-    void Task2Exercise<Type>::Task2()
-    {
-        this->array.insertMaxBeforeOnes();
-    }
-
-    // Task3Exercise
     template <class Type>
     Task3Exercise<Type>::Task3Exercise(Generator<Type>* gen, size_t size)
-        : VariantExercise<Type>(gen, size)
-    {
-    }
+        : VariantExercise<Type>(gen, size) {}
 
     template <class Type>
     void Task3Exercise<Type>::execute()
     {
-        task3Result = Task3();
-    }
-
-    template <class Type>
-    Matrix<Type> Task3Exercise<Type>::Task3()
-    {
-        return this->array.createNewArray();
+        task3Result = this->array.createNewArray();  // Задача 3
     }
 
     template class VariantExercise<int>;
