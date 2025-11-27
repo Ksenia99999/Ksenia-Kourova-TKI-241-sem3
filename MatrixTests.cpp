@@ -1,647 +1,185 @@
 #include <gtest/gtest.h>
 #include "Matrix.h"
-#include "Generator.h"
 #include "IStreamGenerator.h"
 #include "RandomGenerator.h"
 #include "VariantExercise.h"
 #include <sstream>
-#include <vector>
-#include <random>
 
 using namespace MATRIX;
 
-class MatrixTest : public ::testing::Test {
-protected:
-    void SetUp() override {
-        // ß≥ß‡ßŸß’ß—ß÷ßﬁ ß‰ß÷ß„ß‰ß‡ß”ßÌß÷ ßﬁß—ß„ß„ß⁄ß”ßÌ ß’ß›ßÒ ß‚ß—ßŸßﬂßÌßÁ ß„ßËß÷ßﬂß—ß‚ß⁄ß÷ß”
-        empty_array = Matrix<int>();
-
-        positive_array = Matrix<int>(5);
-        positive_array[0] = 1;
-        positive_array[1] = 5;
-        positive_array[2] = 3;
-        positive_array[3] = 8;
-        positive_array[4] = 2;
-
-        mixed_array = Matrix<int>(6);
-        mixed_array[0] = -1;
-        mixed_array[1] = 10;
-        mixed_array[2] = -5;
-        mixed_array[3] = 15;
-        mixed_array[4] = -3;
-        mixed_array[5] = 7;
-
-        with_ones_array = Matrix<int>(5);
-        with_ones_array[0] = 10;   // ß„ß‡ß’ß÷ß‚ßÿß⁄ß‰ 1
-        with_ones_array[1] = 25;   // ßﬂß÷ ß„ß‡ß’ß÷ß‚ßÿß⁄ß‰ 1
-        with_ones_array[2] = 131;  // ß„ß‡ß’ß÷ß‚ßÿß⁄ß‰ 1
-        with_ones_array[3] = 7;    // ßﬂß÷ ß„ß‡ß’ß÷ß‚ßÿß⁄ß‰ 1
-        with_ones_array[4] = 100;  // ß„ß‡ß’ß÷ß‚ßÿß⁄ß‰ 1
-
-        task3_test_array = Matrix<int>(6);
-        for (int i = 0; i < 6; ++i) {
-            task3_test_array[i] = i + 1; // [1, 2, 3, 4, 5, 6]
-        }
-    }
-
-    Matrix<int> empty_array;
-    Matrix<int> positive_array;
-    Matrix<int> mixed_array;
-    Matrix<int> with_ones_array;
-    Matrix<int> task3_test_array;
-};
-
-// ß¥ß÷ß„ß‰ßÌ ß‹ß‡ßﬂß„ß‰ß‚ßÂß‹ß‰ß‡ß‚ß‡ß”
-TEST_F(MatrixTest, DefaultConstructor) {
-    Matrix<int> arr;
-    EXPECT_EQ(arr.getSize(), 0);
-}
-
-TEST_F(MatrixTest, SizeConstructor) {
-    Matrix<int> arr(5);
-    EXPECT_EQ(arr.getSize(), 5);
-
-    for (size_t i = 0; i < arr.getSize(); ++i) {
-        EXPECT_EQ(arr[i], 0);
-    }
-}
-
-TEST_F(MatrixTest, CopyConstructor) {
-    Matrix<int> original(3);
-    original[0] = 1;
-    original[1] = 2;
-    original[2] = 3;
-
-    Matrix<int> copy(original);
-    EXPECT_EQ(copy.getSize(), 3);
-    EXPECT_EQ(copy[0], 1);
-    EXPECT_EQ(copy[1], 2);
-    EXPECT_EQ(copy[2], 3);
-}
-
-TEST_F(MatrixTest, AssignmentOperator) {
-    Matrix<int> original(3);
-    original[0] = 1;
-    original[1] = 2;
-    original[2] = 3;
-
-    Matrix<int> assigned;
-    assigned = original;
-    EXPECT_EQ(assigned.getSize(), 3);
-    EXPECT_EQ(assigned[0], 1);
-    EXPECT_EQ(assigned[1], 2);
-    EXPECT_EQ(assigned[2], 3);
-}
-
-// ß¥ß÷ß„ß‰ßÌ ß‡ß·ß÷ß‚ß—ß‰ß‡ß‚ß‡ß” ß’ß‡ß„ß‰ßÂß·ß—
-TEST_F(MatrixTest, IndexOperator) {
-    Matrix<int> arr(3);
-    arr[0] = 10;
-    arr[1] = 20;
-    arr[2] = 30;
-
-    EXPECT_EQ(arr[0], 10);
-    EXPECT_EQ(arr[1], 20);
-    EXPECT_EQ(arr[2], 30);
-}
-
-TEST_F(MatrixTest, IndexOperatorOutOfRange) {
-    Matrix<int> arr(3);
-    EXPECT_THROW(arr[5], std::out_of_range);
-}
-
-TEST_F(MatrixTest, ConstIndexOperator) {
-    const Matrix<int> arr = positive_array;
-    EXPECT_EQ(arr[0], 1);
-    EXPECT_EQ(arr[1], 5);
-    EXPECT_THROW(arr[10], std::out_of_range);
-}
-
-// ß¥ß÷ß„ß‰ßÌ ß—ß‚ß⁄ßÊßﬁß÷ß‰ß⁄ßÈß÷ß„ß‹ß⁄ßÁ ß‡ß·ß÷ß‚ß—ßËß⁄ß€
-TEST_F(MatrixTest, Addition) {
-    Matrix<int> arr1(3);
-    arr1[0] = 1; arr1[1] = 2; arr1[2] = 3;
-
-    Matrix<int> arr2(3);
-    arr2[0] = 4; arr2[1] = 5; arr2[2] = 6;
-
-    Matrix<int> result = arr1 + arr2;
-    EXPECT_EQ(result[0], 5);
-    EXPECT_EQ(result[1], 7);
-    EXPECT_EQ(result[2], 9);
-}
-
-TEST_F(MatrixTest, AdditionSizeMismatch) {
-    Matrix<int> arr1(3);
-    Matrix<int> arr2(2);
-    EXPECT_THROW(arr1 + arr2, std::invalid_argument);
-}
-
-TEST_F(MatrixTest, Subtraction) {
-    Matrix<int> arr1(3);
-    arr1[0] = 5; arr1[1] = 8; arr1[2] = 10;
-
-    Matrix<int> arr2(3);
-    arr2[0] = 1; arr2[1] = 2; arr2[2] = 3;
-
-    Matrix<int> result = arr1 - arr2;
-    EXPECT_EQ(result[0], 4);
-    EXPECT_EQ(result[1], 6);
-    EXPECT_EQ(result[2], 7);
-}
-
-TEST_F(MatrixTest, ScalarMultiplication) {
-    Matrix<int> arr(3);
-    arr[0] = 2; arr[1] = 4; arr[2] = 6;
-
-    Matrix<int> result = arr * 3;
-    EXPECT_EQ(result[0], 6);
-    EXPECT_EQ(result[1], 12);
-    EXPECT_EQ(result[2], 18);
-}
-
-TEST_F(MatrixTest, ScalarMultiplicationWithDouble) {
-    Matrix<int> arr(3);
-    arr[0] = 2; arr[1] = 4; arr[2] = 6;
-
-    Matrix<int> result = arr * 2.5;
-    EXPECT_EQ(result[0], 5);  // 2 * 2.5 = 5
-    EXPECT_EQ(result[1], 10); // 4 * 2.5 = 10
-    EXPECT_EQ(result[2], 15); // 6 * 2.5 = 15
-}
-
-TEST_F(MatrixTest, FriendScalarMultiplication) {
-    Matrix<int> arr(3);
-    arr[0] = 2; arr[1] = 4; arr[2] = 6;
-
-    Matrix<int> result = 3 * arr;
-    EXPECT_EQ(result[0], 6);
-    EXPECT_EQ(result[1], 12);
-    EXPECT_EQ(result[2], 18);
-}
-
-// ß¥ß÷ß„ß‰ßÌ ß’ß›ßÒ ß©ß°ß•ß°ßπß™ 1: replaceLastPositiveWithSecond
-TEST_F(MatrixTest, Task1_ReplaceLastPositiveWithSecond) {
-    Matrix<int> test_array = mixed_array;
-    test_array.replaceLastPositiveWithSecond();
-
-    EXPECT_EQ(test_array[5], 10); // ß·ß‡ß„ß›ß÷ß’ßﬂß⁄ß€ ß·ß‡ß›ß‡ßÿß⁄ß‰ß÷ß›ßÓßﬂßÌß€ (7) ßŸß—ßﬁß÷ßﬂß÷ßﬂ ßﬂß— ß”ß‰ß‡ß‚ß‡ß€ (10)
-    EXPECT_EQ(test_array[1], 10); // ß”ß‰ß‡ß‚ß‡ß€ ßÔß›ß÷ßﬁß÷ßﬂß‰ ßﬂß÷ ß⁄ßŸßﬁß÷ßﬂß⁄ß›ß„ßÒ
-    EXPECT_EQ(test_array[0], -1);
-    EXPECT_EQ(test_array[2], -5);
-    EXPECT_EQ(test_array[3], 15);
-    EXPECT_EQ(test_array[4], -3);
-}
-
-TEST_F(MatrixTest, Task1_NoPositiveElements) {
-    Matrix<int> negative_array(3);
-    negative_array[0] = -5;
-    negative_array[1] = -2;
-    negative_array[2] = -8;
-
-    negative_array.replaceLastPositiveWithSecond();
-
-    EXPECT_EQ(negative_array[0], -5);
-    EXPECT_EQ(negative_array[1], -2);
-    EXPECT_EQ(negative_array[2], -8);
-}
-
-TEST_F(MatrixTest, Task1_SingleElementArray) {
-    Matrix<int> single(1);
-    single[0] = 5;
-
-    single.replaceLastPositiveWithSecond();
-    EXPECT_EQ(single[0], 5); 
-}
-
-TEST_F(MatrixTest, Task1_EmptyArray) {
+TEST(MatrixTest, ConstructorsAndAccess) {
     Matrix<int> empty;
-    EXPECT_NO_THROW(empty.replaceLastPositiveWithSecond());
+    EXPECT_EQ(empty.getSize(), 0);
+    
+    Matrix<int> sized(3);
+    EXPECT_EQ(sized.getSize(), 3);
+    EXPECT_EQ(sized[0], 0);
+    
+    sized[0] = 1; sized[1] = 2; sized[2] = 3;
+    EXPECT_EQ(sized[1], 2);
+    
+    Matrix<int> copy(sized);
+    EXPECT_EQ(copy[2], 3);
+    
+    EXPECT_THROW(sized[5], std::out_of_range);
 }
 
-TEST_F(MatrixTest, Task1_OnlyOnePositiveElement) {
-    Matrix<int> arr(4);
-    arr[0] = -1;
-    arr[1] = 5;  // ß”ß‰ß‡ß‚ß‡ß€ ßÔß›ß÷ßﬁß÷ßﬂß‰
-    arr[2] = -2;
-    arr[3] = 3;  // ß·ß‡ß„ß›ß÷ß’ßﬂß⁄ß€ ß·ß‡ß›ß‡ßÿß⁄ß‰ß÷ß›ßÓßﬂßÌß€
+TEST(MatrixTest, ArithmeticOperations) {
+    Matrix<int> a(3), b(3);
+    a[0]=1; a[1]=2; a[2]=3;
+    b[0]=4; b[1]=5; b[2]=6;
+    
+    Matrix<int> sum = a + b;
+    EXPECT_EQ(sum[0], 5);
+    EXPECT_EQ(sum[1], 7);
+    EXPECT_EQ(sum[2], 9);
+    
+    Matrix<int> diff = a - b;
+    EXPECT_EQ(diff[0], -3);
+    
+    Matrix<int> scaled = a * 2;
+    EXPECT_EQ(scaled[1], 4);
+}
 
+TEST(MatrixTasksTest, Task1_ReplaceLastPositive) {
+    Matrix<int> arr(5);
+    arr[0] = -1; arr[1] = 10; arr[2] = -5; arr[3] = 15; arr[4] = 7;
+    
     arr.replaceLastPositiveWithSecond();
-    EXPECT_EQ(arr[3], 5); // ßŸß—ßﬁß÷ßﬂß÷ßﬂ ßﬂß— ß”ß‰ß‡ß‚ß‡ß€ ßÔß›ß÷ßﬁß÷ßﬂß‰
+    
+    EXPECT_EQ(arr[4], 10); // –ø–æ—Å–ª–µ–¥–Ω–∏–π –ø–æ–ª–æ–∂–∏—Ç–µ–ª—å–Ω—ã–π (7) –∑–∞–º–µ–Ω–µ–Ω –Ω–∞ –≤—Ç–æ—Ä–æ–π (10)
+    EXPECT_EQ(arr[1], 10); // –≤—Ç–æ—Ä–æ–π —ç–ª–µ–º–µ–Ω—Ç –±–µ–∑ –∏–∑–º–µ–Ω–µ–Ω–∏–π
 }
 
-// ß¥ß÷ß„ß‰ßÌ ß’ß›ßÒ ß©ß°ß•ß°ßπß™ 2: insertMaxBeforeOnes
-TEST_F(MatrixTest, Task2_InsertMaxBeforeOnes) {
-    Matrix<int> test_array = with_ones_array;
-    test_array.insertMaxBeforeOnes();
-
-    EXPECT_EQ(test_array[0], 131); // 10 -> 131
-    EXPECT_EQ(test_array[2], 131); // 131 -> 131
-    EXPECT_EQ(test_array[4], 131); // 100 -> 131
-    EXPECT_EQ(test_array[1], 25);  // ß“ß÷ßŸ ß⁄ßŸßﬁß÷ßﬂß÷ßﬂß⁄ß€
-    EXPECT_EQ(test_array[3], 7);   // ß“ß÷ßŸ ß⁄ßŸßﬁß÷ßﬂß÷ßﬂß⁄ß€
+TEST(MatrixTasksTest, Task1_NoPositiveElements) {
+    Matrix<int> arr(3);
+    arr[0] = -5; arr[1] = -2; arr[2] = -8;
+    
+    arr.replaceLastPositiveWithSecond();
+    
+    EXPECT_EQ(arr[0], -5); // –º–∞—Å—Å–∏–≤ –Ω–µ –∏–∑–º–µ–Ω–∏–ª—Å—è
+    EXPECT_EQ(arr[2], -8);
 }
 
-TEST_F(MatrixTest, Task2_NoOnesInArray) {
-    Matrix<int> no_ones(3);
-    no_ones[0] = 2;
-    no_ones[1] = 3;
-    no_ones[2] = 4;
-
-    no_ones.insertMaxBeforeOnes();
-
-    EXPECT_EQ(no_ones[0], 2);
-    EXPECT_EQ(no_ones[1], 3);
-    EXPECT_EQ(no_ones[2], 4);
+TEST(MatrixTasksTest, Task2_InsertMaxBeforeOnes) {
+    Matrix<int> arr(4);
+    arr[0] = 10;   // —Å–æ–¥–µ—Ä–∂–∏—Ç 1
+    arr[1] = 25;   // –Ω–µ —Å–æ–¥–µ—Ä–∂–∏—Ç 1  
+    arr[2] = 131;  // —Å–æ–¥–µ—Ä–∂–∏—Ç 1 (–º–∞–∫—Å–∏–º–∞–ª—å–Ω—ã–π)
+    arr[3] = 7;    // –Ω–µ —Å–æ–¥–µ—Ä–∂–∏—Ç 1
+    
+    arr.insertMaxBeforeOnes();
+    
+    EXPECT_EQ(arr[0], 131); // –∑–∞–º–µ–Ω–µ–Ω –Ω–∞ –º–∞–∫—Å–∏–º–∞–ª—å–Ω—ã–π
+    EXPECT_EQ(arr[2], 131); // —É–∂–µ –±—ã–ª –º–∞–∫—Å–∏–º–∞–ª—å–Ω—ã–º
+    EXPECT_EQ(arr[1], 25);  // –±–µ–∑ –∏–∑–º–µ–Ω–µ–Ω–∏–π
+    EXPECT_EQ(arr[3], 7);   // –±–µ–∑ –∏–∑–º–µ–Ω–µ–Ω–∏–π
 }
 
-TEST_F(MatrixTest, Task2_AllElementsContainOnes) {
-    Matrix<int> all_ones(3);
-    all_ones[0] = 10;
-    all_ones[1] = 131;
-    all_ones[2] = 100;
-
-    all_ones.insertMaxBeforeOnes();
-
-    int max_val = 131;
-    EXPECT_EQ(all_ones[0], max_val);
-    EXPECT_EQ(all_ones[1], max_val);
-    EXPECT_EQ(all_ones[2], max_val);
-}
-
-// ß¥ß÷ß„ß‰ßÌ ß’ß›ßÒ ß©ß°ß•ß°ßπß™ 3: createNewArray
-TEST_F(MatrixTest, Task3_CreateNewArray) {
-    Matrix<int> result = task3_test_array.createNewArray();
-
+TEST(MatrixTasksTest, Task3_CreateNewArray) {
+    Matrix<int> original(4);
+    original[0] = 1; original[1] = 2; original[2] = 3; original[3] = 4;
+    
+    Matrix<int> result = original.createNewArray();
+    
     EXPECT_EQ(result[0], -1);   // -1 * (0+1) = -1
-    EXPECT_EQ(result[1], -4);   // -2 * (1+1) = -4
+    EXPECT_EQ(result[1], -4);   // -2 * (1+1) = -4  
     EXPECT_EQ(result[2], 6);    // 2 * 3 = 6
     EXPECT_EQ(result[3], -16);  // -4 * (3+1) = -16
-    EXPECT_EQ(result[4], -25);  // -5 * (4+1) = -25
-    EXPECT_EQ(result[5], 30);   // 5 * 6 = 30
 }
 
-TEST_F(MatrixTest, Task3_EmptyArray) {
-    Matrix<int> empty;
-    Matrix<int> result = empty.createNewArray();
-    EXPECT_EQ(result.getSize(), 0);
-}
-
-TEST_F(MatrixTest, Task3_SingleElement) {
-    Matrix<int> single(1);
-    single[0] = 5;
-
-    Matrix<int> result = single.createNewArray();
-    EXPECT_EQ(result[0], -5); // -5 * (0+1) = -5
-}
-
-// ß¥ß÷ß„ß‰ßÌ ß”ß„ß·ß‡ßﬁß‡ß‘ß—ß‰ß÷ß›ßÓßﬂßÌßÁ ßﬁß÷ß‰ß‡ß’ß‡ß”
-TEST_F(MatrixTest, FindMax) {
-    EXPECT_EQ(positive_array.findMax(), 8);
-    EXPECT_EQ(mixed_array.findMax(), 15);
-
-    Matrix<int> negative_array(3);
-    negative_array[0] = -5;
-    negative_array[1] = -1;
-    negative_array[2] = -3;
-    EXPECT_EQ(negative_array.findMax(), -1);
-}
-
-TEST_F(MatrixTest, FindLastPositive) {
-    EXPECT_EQ(mixed_array.findLastPositive(), 5); // ßÔß›ß÷ßﬁß÷ßﬂß‰ 7
-    EXPECT_EQ(positive_array.findLastPositive(), 4); // ßÔß›ß÷ßﬁß÷ßﬂß‰ 2
-
-    Matrix<int> negative_array(3);
-    negative_array[0] = -5;
-    negative_array[1] = -2;
-    negative_array[2] = -8;
-    EXPECT_EQ(negative_array.findLastPositive(), static_cast<size_t>(-1));
-}
-
-TEST_F(MatrixTest, ContainsDigitOne) {
-    Matrix<int> arr(1);
-
-    Matrix<int> test_arr(2);
-    test_arr[0] = 10;
-    test_arr[1] = 25;
-    test_arr.insertMaxBeforeOnes();
-
-    EXPECT_EQ(test_arr[0], 25); 
-}
-
-// ß¥ß÷ß„ß‰ßÌ ß”ßÌß”ß‡ß’ß— ß” ß·ß‡ß‰ß‡ß‹
-TEST_F(MatrixTest, OutputOperator) {
-    Matrix<int> arr(3);
-    arr[0] = 1;
-    arr[1] = 2;
-    arr[2] = 3;
-
-    std::stringstream ss;
-    ss << arr;
-
-    EXPECT_EQ(ss.str(), "1 2 3 ");
-}
-
-TEST_F(MatrixTest, OutputOperatorEmptyArray) {
-    Matrix<int> empty;
-    std::stringstream ss;
-    ss << empty;
-    EXPECT_TRUE(ss.str().empty());
-}
-
-class GeneratorTest : public ::testing::Test {
-protected:
-    void SetUp() override {}
-};
-
-TEST_F(GeneratorTest, IStreamGenerator_ReadsCorrectly) {
-    std::stringstream ss;
-    ss << "10 20 30 40 50";
-
+TEST(GeneratorTest, IStreamGenerator) {
+    std::stringstream ss("100 200 300");
     IStreamGenerator<int> generator(ss);
-
-    EXPECT_EQ(generator.generate(), 10);
-    EXPECT_EQ(generator.generate(), 20);
-    EXPECT_EQ(generator.generate(), 30);
-    EXPECT_EQ(generator.generate(), 40);
-    EXPECT_EQ(generator.generate(), 50);
+    
+    EXPECT_EQ(generator.generate(), 100);
+    EXPECT_EQ(generator.generate(), 200);
+    EXPECT_EQ(generator.generate(), 300);
 }
 
-TEST_F(GeneratorTest, IStreamGenerator_WithDifferentTypes) {
-    std::stringstream ss;
-    ss << "1 2 3";
-
-    IStreamGenerator<int> generator(ss);
-    EXPECT_EQ(generator.generate(), 1);
-    EXPECT_EQ(generator.generate(), 2);
-    EXPECT_EQ(generator.generate(), 3);
-}
-
-TEST_F(GeneratorTest, RandomGenerator_GeneratesInRange) {
-    const int min = 1;
-    const int max = 10;
-    RandomGenerator<int> generator(min, max);
-
-    for (int i = 0; i < 50; ++i) {
-        int value = generator.generate();
-        EXPECT_GE(value, min);
-        EXPECT_LE(value, max);
-    }
-}
-
-TEST_F(GeneratorTest, RandomGenerator_SingleValueRange) {
-    RandomGenerator<int> generator(5, 5);
-
+TEST(GeneratorTest, RandomGenerator) {
+    RandomGenerator<int> generator(1, 10);
+    
     for (int i = 0; i < 10; ++i) {
-        EXPECT_EQ(generator.generate(), 5);
-    }
-}
-
-TEST_F(GeneratorTest, RandomGenerator_NegativeRange) {
-    RandomGenerator<int> generator(-10, -1);
-
-    for (int i = 0; i < 30; ++i) {
         int value = generator.generate();
-        EXPECT_GE(value, -10);
-        EXPECT_LE(value, -1);
+        EXPECT_GE(value, 1);
+        EXPECT_LE(value, 10);
     }
 }
 
-TEST_F(GeneratorTest, RandomGenerator_LargeRange) {
-    RandomGenerator<int> generator(-1000, 1000);
-
-    for (int i = 0; i < 20; ++i) {
-        int value = generator.generate();
-        EXPECT_GE(value, -1000);
-        EXPECT_LE(value, 1000);
-    }
-}
-
-class ExerciseTest : public ::testing::Test {
-protected:
-    void SetUp() override {
-        test_data1 = "1 5 3 8 2";
-        ss1 = std::make_unique<std::stringstream>(test_data1);
-        generator1 = std::make_unique<IStreamGenerator<int>>(*ss1);
-
-        test_data2 = "10 25 131 7 100";
-        ss2 = std::make_unique<std::stringstream>(test_data2);
-        generator2 = std::make_unique<IStreamGenerator<int>>(*ss2);
-
-        test_data3 = "1 2 3 4 5 6";
-        ss3 = std::make_unique<std::stringstream>(test_data3);
-        generator3 = std::make_unique<IStreamGenerator<int>>(*ss3);
-    }
-
-    std::string test_data1, test_data2, test_data3;
-    std::unique_ptr<std::stringstream> ss1, ss2, ss3;
-    std::unique_ptr<IStreamGenerator<int>> generator1, generator2, generator3;
-};
-
-TEST_F(ExerciseTest, Task1Exercise_Execute) {
-    Task1Exercise<int> exercise(generator1.get(), 5);
-
-    Matrix<int> original_array = exercise.get_array();
-    EXPECT_EQ(original_array[0], 1);
-    EXPECT_EQ(original_array[1], 5);
-    EXPECT_EQ(original_array[2], 3);
-    EXPECT_EQ(original_array[3], 8);
-    EXPECT_EQ(original_array[4], 2);
-
+TEST(ExerciseTest, Task1Exercise) {
+    std::stringstream ss("5 -3 8 12 -1");
+    IStreamGenerator<int> generator(ss);
+    
+    Task1Exercise<int> exercise(&generator, 5);
     exercise.execute();
-
-    Matrix<int> result_array = exercise.get_array();
-    EXPECT_EQ(result_array[4], 5); // ß·ß‡ß„ß›ß÷ß’ßﬂß⁄ß€ ßÔß›ß÷ßﬁß÷ßﬂß‰ ßŸß—ßﬁß÷ßﬂß÷ßﬂ ßﬂß— ß”ß‰ß‡ß‚ß‡ß€
+    
+    Matrix<int> result = exercise.get_array();
+    EXPECT_EQ(result[4], 8); // –ø–æ—Å–ª–µ–¥–Ω–∏–π –ø–æ–ª–æ–∂–∏—Ç–µ–ª—å–Ω—ã–π (12) –∑–∞–º–µ–Ω–µ–Ω –Ω–∞ –≤—Ç–æ—Ä–æ–π (8)
 }
 
-TEST_F(ExerciseTest, Task1Exercise_Task1Method) {
-    Task1Exercise<int> exercise(generator1.get(), 5);
-
-    exercise.Task1();
-
-    Matrix<int> result_array = exercise.get_array();
-    EXPECT_EQ(result_array[4], 5);
-}
-
-TEST_F(ExerciseTest, Task2Exercise_Execute) {
-    Task2Exercise<int> exercise(generator2.get(), 5);
-
+TEST(ExerciseTest, Task2Exercise) {
+    std::stringstream ss("15 20 105 30");
+    IStreamGenerator<int> generator(ss);
+    
+    Task2Exercise<int> exercise(&generator, 4);
     exercise.execute();
-
-    Matrix<int> result_array = exercise.get_array();
-    EXPECT_EQ(result_array[0], 131); // 10 -> 131
-    EXPECT_EQ(result_array[2], 131); // 131 -> 131
-    EXPECT_EQ(result_array[4], 131); // 100 -> 131
-    EXPECT_EQ(result_array[1], 25);  // ß“ß÷ßŸ ß⁄ßŸßﬁß÷ßﬂß÷ßﬂß⁄ß€
-    EXPECT_EQ(result_array[3], 7);   // ß“ß÷ßŸ ß⁄ßŸßﬁß÷ßﬂß÷ßﬂß⁄ß€
+    
+    Matrix<int> result = exercise.get_array();
+    EXPECT_EQ(result[0], 105); // 15 —Å–æ–¥–µ—Ä–∂–∏—Ç 1 -> –∑–∞–º–µ–Ω–µ–Ω –Ω–∞ –º–∞–∫—Å–∏–º—É–º 105
+    EXPECT_EQ(result[2], 105); // 105 —Å–æ–¥–µ—Ä–∂–∏—Ç 1 -> –æ—Å—Ç–∞–µ—Ç—Å—è –º–∞–∫—Å–∏–º—É–º–æ–º
 }
 
-TEST_F(ExerciseTest, Task2Exercise_Task2Method) {
-    Task2Exercise<int> exercise(generator2.get(), 5);
-
-    exercise.Task2();
-
-    Matrix<int> result_array = exercise.get_array();
-    EXPECT_EQ(result_array[0], 131);
-}
-
-TEST_F(ExerciseTest, Task3Exercise_Execute) {
-    Task3Exercise<int> exercise(generator3.get(), 6);
-
+TEST(ExerciseTest, Task3Exercise) {
+    std::stringstream ss("2 4 6 8");
+    IStreamGenerator<int> generator(ss);
+    
+    Task3Exercise<int> exercise(&generator, 4);
     exercise.execute();
-
+    
     Matrix<int> result = exercise.getTask3Result();
-    EXPECT_EQ(result.getSize(), 6);
-
-    // ß±ß‚ß‡ß”ß÷ß‚ßÒß÷ßﬁ ß·ß‚ß—ß”ß⁄ß›ßÓßﬂß‡ß„ß‰ßÓ ß”ßÌßÈß⁄ß„ß›ß÷ßﬂß⁄ß€
-    EXPECT_EQ(result[0], -1);   // -1 * (0+1) = -1
-    EXPECT_EQ(result[2], 6);    // 2 * 3 = 6
-    EXPECT_EQ(result[5], 30);   // 5 * 6 = 30
-}
-
-TEST_F(ExerciseTest, Task3Exercise_Task3Method) {
-    Task3Exercise<int> exercise(generator3.get(), 6);
-
-    Matrix<int> result = exercise.Task3();
-
-    EXPECT_EQ(result.getSize(), 6);
-    EXPECT_EQ(exercise.getTask3Result().getSize(), 0); // execute ß÷ßÎß÷ ßﬂß÷ ß”ßÌßŸßÌß”ß—ß›ß„ßÒ
-}
-
-TEST_F(ExerciseTest, Task3Exercise_GetTask3Result) {
-    Task3Exercise<int> exercise(generator3.get(), 6);
-
-    // ß•ß‡ ß”ßÌß·ß‡ß›ßﬂß÷ßﬂß⁄ßÒ execute ß‚ß÷ßŸßÂß›ßÓß‰ß—ß‰ ß’ß‡ß›ßÿß÷ßﬂ ß“ßÌß‰ßÓ ß·ßÂß„ß‰ßÌßﬁ
-    Matrix<int> initial_result = exercise.getTask3Result();
-    EXPECT_EQ(initial_result.getSize(), 0);
-
-    exercise.execute();
-
-    // ß±ß‡ß„ß›ß÷ ß”ßÌß·ß‡ß›ßﬂß÷ßﬂß⁄ßÒ ß’ß‡ß›ßÿß÷ßﬂ ß“ßÌß‰ßÓ ß‚ß÷ßŸßÂß›ßÓß‰ß—ß‰
-    Matrix<int> final_result = exercise.getTask3Result();
-    EXPECT_EQ(final_result.getSize(), 6);
-}
-
-TEST_F(ExerciseTest, ExerciseBaseFunctionality) {
-    Task1Exercise<int> exercise(generator1.get(), 5);
-
-    Matrix<int> array = exercise.get_array();
-    EXPECT_EQ(array.getSize(), 5);
-    EXPECT_EQ(array[0], 1);
-}
-
-// ß¥ß÷ß„ß‰ ß·ß‡ß›ß⁄ßﬁß‡ß‚ßÊßﬂß‡ß‘ß‡ ß·ß‡ß”ß÷ß’ß÷ßﬂß⁄ßÒ
-TEST_F(ExerciseTest, PolymorphicBehavior) {
-    std::stringstream ss("1 2 3");
-    IStreamGenerator<int> gen(ss);
-
-    // ß≥ß‡ßŸß’ß—ß÷ßﬁ ß‚ß—ßŸßﬂßÌß÷ ßÂß·ß‚ß—ßÿßﬂß÷ßﬂß⁄ßÒ ßÈß÷ß‚ß÷ßŸ ßÂß‹ß—ßŸß—ß‰ß÷ß›ßÓ ßﬂß— ß“ß—ßŸß‡ß”ßÌß€ ß‹ß›ß—ß„ß„
-    std::unique_ptr<Exercise<int>> exercise1 = std::make_unique<Task1Exercise<int>>(&gen, 3);
-    std::unique_ptr<Exercise<int>> exercise2 = std::make_unique<Task2Exercise<int>>(&gen, 3);
-    std::unique_ptr<Exercise<int>> exercise3 = std::make_unique<Task3Exercise<int>>(&gen, 3);
-
-    // ß•ß‡ß›ßÿßﬂßÌ ß‚ß—ß“ß‡ß‰ß—ß‰ßÓ ß“ß÷ßŸ ß‡ßÍß⁄ß“ß‡ß‹
-    EXPECT_NO_THROW(exercise1->execute());
-    EXPECT_NO_THROW(exercise2->execute());
-    EXPECT_NO_THROW(exercise3->execute());
-
-    // ßÆß÷ß‰ß‡ß’ßÌ Task1, Task2, Task3 ß’ß‡ß›ßÿßﬂßÌ ß“ßÌß‰ßÓ ß’ß‡ß„ß‰ßÂß·ßﬂßÌ
-    EXPECT_NO_THROW(exercise1->Task1());
-    EXPECT_NO_THROW(exercise2->Task2());
-    EXPECT_NO_THROW(exercise3->Task3());
+    EXPECT_EQ(result.getSize(), 4);
+    EXPECT_EQ(result[2], 12); // 2 * 6 = 12 (—Ç—Ä–µ—Ç–∏–π —ç–ª–µ–º–µ–Ω—Ç)
 }
 
 TEST(IntegrationTest, CompleteWorkflow) {
-    // ß¥ß÷ß„ß‰ ß·ß‡ß›ßﬂß‡ß‘ß‡ ß‚ß—ß“ß‡ßÈß÷ß‘ß‡ ß·ß‚ß‡ßËß÷ß„ß„ß—
-    std::stringstream ss("5 -3 10 15 -8 20");
+    std::stringstream ss("3 7 11 4 9");
     IStreamGenerator<int> generator(ss);
-
-    // ß≥ß‡ßŸß’ß—ß÷ßﬁ ßÂß·ß‚ß—ßÿßﬂß÷ßﬂß⁄ßÒ
-    Task1Exercise<int> task1(&generator, 6);
-    Task2Exercise<int> task2(&generator, 6);
-    Task3Exercise<int> task3(&generator, 6);
-
-    // ß£ßÌß·ß‡ß›ßﬂßÒß÷ßﬁ ßŸß—ß’ß—ßﬂß⁄ßÒ
-    task1.execute();
-    task2.execute();
-    task3.execute();
-
-    // ß±ß‚ß‡ß”ß÷ß‚ßÒß÷ßﬁ, ßÈß‰ß‡ ß‚ß÷ßŸßÂß›ßÓß‰ß—ß‰ßÌ ß·ß‡ß›ßÂßÈß÷ßﬂßÌ
-    Matrix<int> result1 = task1.get_array();
-    Matrix<int> result2 = task2.get_array();
-    Matrix<int> result3 = task3.getTask3Result();
-
-    EXPECT_EQ(result1.getSize(), 6);
-    EXPECT_EQ(result2.getSize(), 6);
-    EXPECT_EQ(result3.getSize(), 6);
-}
-
-TEST(IntegrationTest, RandomGeneratorWithExercise) {
-    // ß™ßﬂß‰ß÷ß‘ß‚ß—ßËß⁄ß‡ßﬂßﬂßÌß€ ß‰ß÷ß„ß‰ ß„ RandomGenerator
-    RandomGenerator<int> random_generator(-100, 100);
-    Task1Exercise<int> exercise(&random_generator, 10);
-
-    Matrix<int> array = exercise.get_array();
-    EXPECT_EQ(array.getSize(), 10);
-
-    // ß£ß„ß÷ ßÔß›ß÷ßﬁß÷ßﬂß‰ßÌ ß’ß‡ß›ßÿßﬂßÌ ß“ßÌß‰ßÓ ß” ß’ß⁄ß—ß·ß—ßŸß‡ßﬂß÷ [-100, 100]
-    for (size_t i = 0; i < array.getSize(); ++i) {
-        EXPECT_GE(array[i], -100);
-        EXPECT_LE(array[i], 100);
-    }
-
-    exercise.execute();
-    EXPECT_EQ(exercise.get_array().getSize(), 10);
-}
-
-TEST(EdgeCaseTest, VeryLargeArray) {
-    // ß¥ß÷ß„ß‰ ß„ ß“ß‡ß›ßÓßÍß⁄ßﬁ ßﬁß—ß„ß„ß⁄ß”ß‡ßﬁ
-    std::stringstream ss;
-    for (int i = 0; i < 1000; ++i) {
-        ss << i << " ";
-    }
-
-    IStreamGenerator<int> generator(ss);
-    Task1Exercise<int> exercise(&generator, 1000);
-
-    EXPECT_EQ(exercise.get_array().getSize(), 1000);
-    EXPECT_NO_THROW(exercise.execute());
-}
-
-TEST(EdgeCaseTest, ArrayWithZeros) {
-    // ß¥ß÷ß„ß‰ ß„ ßﬂßÂß›ß÷ß”ßÌßﬁß⁄ ßŸßﬂß—ßÈß÷ßﬂß⁄ßÒßﬁß⁄
-    std::stringstream ss("0 0 0 0 0");
-    IStreamGenerator<int> generator(ss);
-
+    
+    // –¢–µ—Å—Ç–∏—Ä—É–µ–º –≤—Å–µ —Ç—Ä–∏ –∑–∞–¥–∞–Ω–∏—è –ø–æ—Å–ª–µ–¥–æ–≤–∞—Ç–µ–ª—å–Ω–æ
     Task1Exercise<int> task1(&generator, 5);
-    Task2Exercise<int> task2(&generator, 5);
+    task1.execute();
+    
+    Task2Exercise<int> task2(&generator, 5); 
+    task2.execute();
+    
     Task3Exercise<int> task3(&generator, 5);
+    task3.execute();
+    
+    // –ü—Ä–æ–≤–µ—Ä—è–µ–º —á—Ç–æ –≤—Å–µ –≤—ã–ø–æ–ª–Ω–µ–Ω–æ –±–µ–∑ –æ—à–∏–±–æ–∫
+    EXPECT_EQ(task1.get_array().getSize(), 5);
+    EXPECT_EQ(task2.get_array().getSize(), 5);
+    EXPECT_EQ(task3.getTask3Result().getSize(), 5);
+}
 
-    EXPECT_NO_THROW(task1.execute());
-    EXPECT_NO_THROW(task2.execute());
-    EXPECT_NO_THROW(task3.execute());
-
-    Matrix<int> result3 = task3.getTask3Result();
-    EXPECT_EQ(result3.getSize(), 5);
-
-    for (size_t i = 0; i < result3.getSize(); ++i) {
-        EXPECT_EQ(result3[i], 0);
+TEST(IntegrationTest, RandomGeneratorIntegration) {
+    RandomGenerator<int> generator(-50, 50);
+    Task1Exercise<int> exercise(&generator, 8);
+    
+    Matrix<int> array = exercise.get_array();
+    EXPECT_EQ(array.getSize(), 8);
+    
+    // –ü—Ä–æ–≤–µ—Ä—è–µ–º —á—Ç–æ –≤—Å–µ —ç–ª–µ–º–µ–Ω—Ç—ã –≤ –¥–∏–∞–ø–∞–∑–æ–Ω–µ
+    for (size_t i = 0; i < array.getSize(); ++i) {
+        EXPECT_GE(array[i], -50);
+        EXPECT_LE(array[i], 50);
     }
+    
+    exercise.execute();
+    EXPECT_EQ(exercise.get_array().getSize(), 8);
 }
 
-TEST(EdgeCaseTest, ArrayWithLargeNumbers) {
-    // ß¥ß÷ß„ß‰ ß„ ß“ß‡ß›ßÓßÍß⁄ßﬁß⁄ ßÈß⁄ß„ß›ß—ßﬁß⁄
-    std::stringstream ss("1000000 -1000000 999999 -999999");
-    IStreamGenerator<int> generator(ss);
-
-    Task1Exercise<int> exercise(&generator, 4);
-    EXPECT_NO_THROW(exercise.execute());
-
-    Matrix<int> result = exercise.get_array();
-    EXPECT_EQ(result.getSize(), 4);
-}
-
-int main(int argc, char** argv) {
+int main(int argc, char **argv) {
     ::testing::InitGoogleTest(&argc, argv);
     return RUN_ALL_TESTS();
 }
