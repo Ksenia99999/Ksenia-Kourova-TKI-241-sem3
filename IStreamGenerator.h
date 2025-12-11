@@ -1,19 +1,22 @@
+// Генератор чисел из входного потока (например, с клавиатуры)
+// Считывает числа из std::cin или другого потока ввода
 #pragma once
-#include "Generator.h" 
-#include <iostream>     
+#include "Generator.h"
+#include <iostream>
 
 namespace MATRIX
 {
-    // Генератор, читающий значения из потока ввода
-    template <class Type>
-    class IStreamGenerator : public Generator<Type>
+    // Генератор для ручного ввода чисел
+    class IStreamGenerator : public Generator
     {
     private:
-        std::istream& in;  // Ссылка на поток ввода
-        
+        std::istream& in;  // Поток ввода (обычно std::cin)
+
     public:
-        IStreamGenerator(std::istream& in = std::cin);  // По умолчанию std::cin
+        // Конструктор - принимает поток ввода
+        IStreamGenerator(std::istream& in = std::cin);
         
-        Type generate() override;  // Чтение из потока
+        // Считывает число из потока ввода и возвращает его
+        int generate() override;
     };
 }
