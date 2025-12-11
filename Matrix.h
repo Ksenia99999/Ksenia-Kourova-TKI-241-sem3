@@ -20,14 +20,8 @@ namespace MATRIX
         explicit Matrix(const size_t size);    // Конструктор с заданным размером
         Matrix(const size_t size, const int& value);  // Конструктор с размером и значением
         
-        // Конструктор копирования - создает копию матрицы
-        Matrix(const Matrix& other);
-        
         // Конструктор перемещения - перемещает данные из другой матрицы
         Matrix(Matrix&& other) noexcept;
-        
-        // Оператор присваивания копированием
-        Matrix& operator=(const Matrix& other);
         
         // Оператор присваивания перемещением
         Matrix& operator=(Matrix&& other) noexcept;
@@ -53,3 +47,4 @@ namespace MATRIX
         void fill(Generator& generator);
     };
 }
+
