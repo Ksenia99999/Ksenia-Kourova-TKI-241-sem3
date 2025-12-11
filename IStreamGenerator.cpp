@@ -1,19 +1,13 @@
 #include "IStreamGenerator.h"
 
-namespace MATRIX
+MATRIX::IStreamGenerator::IStreamGenerator(std::istream& in)
+    : in{in}
 {
-    template <class Type>
-    IStreamGenerator<Type>::IStreamGenerator(std::istream& in) : in(in)
-    {
-    }
+}
 
-    template <class Type>
-    Type IStreamGenerator<Type>::generate()
-    {
-        Type value;
-        in >> value;
-        return value;
-    }
-
-    template class IStreamGenerator<int>;
+int MATRIX::IStreamGenerator::generate()
+{
+    int value = 0;
+    this->in >> value;
+    return value;
 }
