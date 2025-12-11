@@ -1,177 +1,236 @@
 #include <iostream>
-#include <cstdlib>
-#include <ctime>
+#include <memory>
+
 #include "Matrix.h"
-#include "Generator.h"
-#include "VariantExercise.h"
+#include "ConstGenerator.h"
+#include "RandomGenerator.h"
+#include "IStreamGenerator.h"
+#include "ZeroGenerator.h"
+#include "Task1Exercise.h"
+#include "Task2Exercise.h"
+#include "Task3Exercise.h"
 
 using namespace MATRIX;
 
-// Режимы работы программы
-enum Choose {
-    MANUALLY = 1,  // Ручной ввод
-    RANDOM,        // Случайные числа
-    CONSTANT       // Константные данные
+enum class FillMethod {
+    KEYBOARD = 1,  // Ручной ввод с клавиатуры
+    RANDOM = 2,    // Случайные числа
+    CONSTANT = 3,  // Одно константное значение
+    ZEROS = 4      // Все нули
 };
 
-// Тестовые данные для константного режима
-const int CONSTANT_DATA[] = { 5, -3, 10, 15, -8, 20 };
-const size_t CONSTANT_SIZE = 6;
+enum class MenuChoice {
+    TASK1 = 1,  // Задание 1
+    TASK2 = 2,  // Задание 2
+    TASK3 = 3,  // Задание 3
+    EXIT = 0    // Выход из программы
+};
 
-// Прототипы вспомогательных функций
-static int input();                // Ввод числа
-static int positive_input();       // Ввод положительного числа
-static void demonstrate_manual();  // Режим ручного ввода
-static void demonstrate_random();  // Режим случайных чисел
-static void demonstrate_constant(); // Режим константных данных
+// Функция выбора способа заполнения матрицы
+// Показывает меню и создает соответствующий генератор
+std::unique_ptr<Generator> choose_fill_method()
+{
+    std::cout << "\nВыберите способ заполнения матрицы:\n";
+    std::cout << static_cast<int>(FillMethod::KEYBOARD) << ". С клавиатуры\n";
+    std::cout << static_cast<int>(FillMethod::RANDOM) << ". Рандомно\n";
+    std::cout << static_cast<int>(FillMethod::CONSTANT) << ". Константой\n";
+    std::cout << static_cast<int>(FillMethod::ZEROS) << ". Нулями\n";
+    std::cout << "Ваш выбор: ";
 
+    int choice;
+    std::cin >> choice;
+
+    // Создаем генератор в зависимости от выбора пользователя
+    switch (static_cast<FillMethod>(choice))
+    {
+        case FillMethod::KEYBOARD:
+            return std::make_unique<IStreamGenerator>(std::cin);
+        case FillMethod::RANDOM:
+        {
+            int min, max;
+            std::cout << "Введите минимальное значение: ";
+            std::cin >> min;
+            std::cout << "Введите максимальное значение: ";
+            std::cin >> max;
+            return std::make_unique<RandomGenerator>(min, max);
+        }
+        case FillMethod::CONSTANT:
+        {
+            int value;
+            std::cout << "Введите константное значение: ";
+            std::cin >> value;
+            return std::make_unique<ConstGenerator>(value);
+        }
+        case FillMethod::ZEROS:
+            return std::make_unique<ZeroGenerator>();
+        default:
+            std::cout << "Неверный выбор. Используется заполнение с клавиатуры.\n";
+            return std::make_unique<IStreamGenerator>(std::cin);
+    }
+}
+
+// Демонстрация задания 1
+// Показывает работу алгоритма замены последнего положительного элемента
+void demonstrate_task1() {
+    std::cout << "\n=== ЗАДАНИЕ 1 ===\n";
+    std::cout << "Замена последнего положительного элемента на второй элемент\n";
+
+    // Запрашиваем размер матрицы
+    std::cout << "\nВведите размер матрицы: ";
+    size_t size;
+    std::cin >> size;
+
+    // Создаем матрицу указанного размера
+    auto matrix = std::make_unique<Matrix>(size);
+
+    // Выбираем способ заполнения
+    std::cout << "\nВыбор способа заполнения матрицы:\n";
+    auto generator = choose_fill_method();
+
+    // Заполняем матрицу с помощью выбранного генератора
+    std::cout << "\nЗаполнение матрицы:\n";
+    matrix->fill(*generator);
+
+    // Если выбран ручной ввод, показываем что ввели
+    if (dynamic_cast<IStreamGenerator*>(generator.get()))
+    {
+        std::cout << "Матрица заполнена следующими значениями:\n";
+        std::cout << matrix->to_string() << std::endl;
+    }
+
+    // Создаем упражнение и выполняем его
+    Task1Exercise exercise(std::move(matrix), std::move(generator));
+
+    std::cout << "\nИсходная матрица: " << exercise.get_matrix().to_string() << std::endl;
+    exercise.task();  // Выполняем задание 1
+    std::cout << "Результат: " << exercise.get_matrix().to_string() << std::endl;
+}
+
+// Демонстрация задания 2
+// Показывает работу алгоритма вставки максимума перед элементами с цифрой 1
+void demonstrate_task2() {
+    std::cout << "\n=== ЗАДАНИЕ 2 ===\n";
+    std::cout << "Вставка максимального элемента перед элементами, содержащими цифру 1\n";
+
+    // Запрашиваем размер матрицы
+    std::cout << "\nВведите размер матрицы: ";
+    size_t size;
+    std::cin >> size;
+
+    // Создаем матрицу указанного размера
+    auto matrix = std::make_unique<Matrix>(size);
+
+    // Выбираем способ заполнения
+    std::cout << "\nВыбор способа заполнения матрицы:\n";
+    auto generator = choose_fill_method();
+
+    // Заполняем матрицу с помощью выбранного генератора
+    std::cout << "\nЗаполнение матрицы:\n";
+    matrix->fill(*generator);
+
+    // Если выбран ручной ввод, показываем что ввели
+    if (dynamic_cast<IStreamGenerator*>(generator.get()))
+    {
+        std::cout << "Матрица заполнена следующими значениями:\n";
+        std::cout << matrix->to_string() << std::endl;
+    }
+
+    // Создаем упражнение и выполняем его
+    Task2Exercise exercise(std::move(matrix), std::move(generator));
+
+    std::cout << "\nИсходная матрица: " << exercise.get_matrix().to_string() << std::endl;
+    exercise.task();  // Выполняем задание 2
+    std::cout << "Результат: " << exercise.get_matrix().to_string() << std::endl;
+}
+
+// Демонстрация задания 3
+// Показывает создание новой матрицы по правилу
+void demonstrate_task3() {
+    std::cout << "\n=== ЗАДАНИЕ 3 ===\n";
+    std::cout << "Создание матрицы M из матрицы P по правилу:\n";
+    std::cout << "M_i = i * P_i, если (i+1) кратно 3\n";
+    std::cout << "M_i = -P_i * (i+1), в остальных случаях\n";
+
+    // Запрашиваем размер матрицы
+    std::cout << "\nВведите размер матрицы: ";
+    size_t size;
+    std::cin >> size;
+
+    // Создаем матрицу указанного размера
+    auto matrix = std::make_unique<Matrix>(size);
+
+    // Выбираем способ заполнения
+    std::cout << "\nВыбор способа заполнения матрицы:\n";
+    auto generator = choose_fill_method();
+
+    // Заполняем матрицу с помощью выбранного генератора
+    std::cout << "\nЗаполнение матрицы:\n";
+    matrix->fill(*generator);
+
+    // Если выбран ручной ввод, показываем что ввели
+    if (dynamic_cast<IStreamGenerator*>(generator.get()))
+    {
+        std::cout << "Матрица заполнена следующими значениями:\n";
+        std::cout << matrix->to_string() << std::endl;
+    }
+
+    // Создаем упражнение и выполняем его
+    Task3Exercise exercise(std::move(matrix), std::move(generator));
+
+    std::cout << "\nМатрица P: " << exercise.get_matrix().to_string() << std::endl;
+    exercise.task();  // Выполняем задание 3
+    std::cout << "Матрица M (результат): " << exercise.get_result().to_string() << std::endl;
+}
+
+// Главная функция программы - точка входа
 int main() {
-    std::cout << "ARRAY PROGRAM\n";
-    std::cout << "Variant 13: Three array tasks\n\n";
-    
-    std::cout << "Choose mode:\n";
-    std::cout << MANUALLY << " - Manual input\n";
-    std::cout << RANDOM << " - Random numbers\n";
-    std::cout << CONSTANT << " - Constant data\n";
-    std::cout << "Your choice: ";
-    
-    int choice = input();
-    
-    switch (choice) {
-    case MANUALLY:
-        demonstrate_manual();
-        break;
-    case RANDOM:
-        demonstrate_random();
-        break;
-    case CONSTANT:
-        demonstrate_constant();
-        break;
-    default:
-        std::cout << "Error: invalid choice\n";
+    try {
+        // Заголовок программы
+        std::cout << "ПРОГРАММА ДЛЯ РАБОТЫ С МАССИВАМИ\n";
+        std::cout << "Вариант 13: Три задания с массивами\n";
+
+        MenuChoice choice;
+        // Основной цикл программы
+        do {
+            // Показываем главное меню
+            std::cout << "\n=== ГЛАВНОЕ МЕНЮ ===\n";
+            std::cout << static_cast<int>(MenuChoice::TASK1) << ". Задание 1 (замена последнего положительного)\n";
+            std::cout << static_cast<int>(MenuChoice::TASK2) << ". Задание 2 (вставка максимума перед элементами с цифрой 1)\n";
+            std::cout << static_cast<int>(MenuChoice::TASK3) << ". Задание 3 (создание новой матрицы)\n";
+            std::cout << static_cast<int>(MenuChoice::EXIT) << ". Выход\n";
+            std::cout << "Ваш выбор: ";
+            
+            // Считываем выбор пользователя
+            int input;
+            std::cin >> input;
+            choice = static_cast<MenuChoice>(input);
+
+            // Выполняем выбранное действие
+            switch (choice) {
+                case MenuChoice::TASK1:
+                    demonstrate_task1();  // Задание 1
+                    break;
+                case MenuChoice::TASK2:
+                    demonstrate_task2();  // Задание 2
+                    break;
+                case MenuChoice::TASK3:
+                    demonstrate_task3();  // Задание 3
+                    break;
+                case MenuChoice::EXIT:
+                    std::cout << "Выход из программы.\n";
+                    break;
+                default:
+                    std::cout << "Неверный выбор. Попробуйте снова.\n";
+            }
+        } while (choice != MenuChoice::EXIT);  // Продолжаем пока не выберут выход
+
+        std::cout << "\nПрограмма завершена!\n";
+
+    } catch (const std::exception& e) {
+        // Обработка исключений
+        std::cerr << "Ошибка: " << e.what() << std::endl;
         return 1;
     }
-    
-    std::cout << "\nProgram completed successfully!\n";
-    return 0;
-}
 
-// Функция ввода числа
-static int input() {
-    int number;
-    std::cin >> number;
-    return number;
-}
-
-// Функция ввода положительного числа
-static int positive_input() {
-    int number = input();
-    if (number <= 0) {
-        std::cout << "Error: positive number required\n";
-        exit(1);
-    }
-    return number;
-}
-
-// Ручной режим ввода
-static void demonstrate_manual() {
-    std::cout << "=== MANUAL INPUT MODE ===\n\n";
-    
-    std::cout << "Enter array size: ";
-    int size = positive_input();
-    
-    Matrix<int> array(size);
-    
-    std::cout << "\nEnter " << size << " elements:\n";
-    for (int i = 0; i < size; ++i) {
-        std::cout << "Element [" << i << "]: ";
-        array[i] = input();
-    }
-    
-    std::cout << "\nOriginal array: " << array << std::endl;
-    
-    // Задача 1
-    std::cout << "TASK 1: Replace last positive element with second element...\n";
-    array.replaceLastPositiveWithSecond();
-    std::cout << "Result after task 1: " << array << std::endl;
-    
-    // Задача 2
-    std::cout << "TASK 2: Insert max element before elements containing digit 1...\n";
-    array.insertMaxBeforeOnes();
-    std::cout << "Result after task 2: " << array << std::endl;
-    
-    // Задача 3
-    std::cout << "TASK 3: Create new array by rules...\n";
-    Matrix<int> newArray = array.createNewArray();
-    std::cout << "New array (task 3 result): " << newArray << std::endl;
-}
-
-// Режим случайных чисел
-static void demonstrate_random() {
-    std::cout << "=== RANDOM NUMBER MODE ===\n\n";
-    
-    std::cout << "Enter array size: ";
-    int size = positive_input();
-    
-    std::cout << "Enter min value: ";
-    int min = input();
-    
-    std::cout << "Enter max value: ";
-    int max = input();
-    
-    if (min > max) {
-        std::cout << "Error: min cannot be greater than max\n";
-        return;
-    }
-    
-    srand(static_cast<unsigned int>(time(0)));
-    Matrix<int> array(size);
-    
-    for (int i = 0; i < size; ++i) {
-        array[i] = min + rand() % (max - min + 1);
-    }
-    
-    std::cout << "\nOriginal array (filled with random numbers): " << array << std::endl;
-    
-    // Задача 1
-    std::cout << "TASK 1: Replace last positive element with second element...\n";
-    array.replaceLastPositiveWithSecond();
-    std::cout << "Result after task 1: " << array << std::endl;
-    
-    // Задача 2
-    std::cout << "TASK 2: Insert max element before elements containing digit 1...\n";
-    array.insertMaxBeforeOnes();
-    std::cout << "Result after task 2: " << array << std::endl;
-    
-    // Задача 3
-    std::cout << "TASK 3: Create new array by rules...\n";
-    Matrix<int> newArray = array.createNewArray();
-    std::cout << "New array (task 3 result): " << newArray << std::endl;
-}
-
-// Режим константных данных
-static void demonstrate_constant() {
-    std::cout << "=== CONSTANT DATA MODE ===\n\n";
-    
-    Matrix<int> array(CONSTANT_SIZE);
-    for (size_t i = 0; i < CONSTANT_SIZE; ++i) {
-        array[i] = CONSTANT_DATA[i];
-    }
-    
-    std::cout << "Original array: " << array << std::endl;
-    
-    // Задача 1
-    std::cout << "TASK 1: Replace last positive element with second element...\n";
-    array.replaceLastPositiveWithSecond();
-    std::cout << "Result after task 1: " << array << std::endl;
-    
-    // Задача 2
-    std::cout << "TASK 2: Insert max element before elements containing digit 1...\n";
-    array.insertMaxBeforeOnes();
-    std::cout << "Result after task 2: " << array << std::endl;
-    
-    // Задача 3
-    std::cout << "TASK 3: Create new array by rules...\n";
-    Matrix<int> newArray = array.createNewArray();
-    std::cout << "New array (task 3 result): " << newArray << std::endl;
+    return 0;  // Успешное завершение программы
 }
