@@ -1,20 +1,20 @@
 #pragma once
-#include "Generator.h" 
-#include <random>      
+#include "Generator.h"
+#include <random>
 
 namespace MATRIX
 {
-    // Генератор случайных чисел
-    template <class Type>
-    class RandomGenerator : public Generator<Type>
+    class RandomGenerator : public Generator
     {
     private:
-        std::mt19937 generator;  // Генератор Mersenne Twister
-        std::uniform_int_distribution<int> distribution;  // Равномерное распределение
-        
+        std::uniform_int_distribution<int> distribution;  // Распределение чисел
+        std::mt19937 generator; // Генератор случайных чисел
+
     public:
-        RandomGenerator(int min, int max);  // Конструктор с диапазоном
+        // Конструктор - задает диапазон случайных чисел
+        RandomGenerator(const int min, const int max);
         
-        Type generate() override;  // Генерация случайного числа
+        // Генерирует случайное число в заданном диапазоне
+        int generate() override;
     };
 }
