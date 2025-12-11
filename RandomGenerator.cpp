@@ -1,18 +1,12 @@
 #include "RandomGenerator.h"
 
-namespace MATRIX
+MATRIX::RandomGenerator::RandomGenerator(const int min, const int max)
 {
-    template <class Type>
-    RandomGenerator<Type>::RandomGenerator(int min, int max)
-        : generator(std::random_device()()), distribution(min, max)
-    {
-    }
+    this->generator = std::mt19937(std::random_device{}());
+    this->distribution = std::uniform_int_distribution<int>(min, max);
+}
 
-    template <class Type>
-    Type RandomGenerator<Type>::generate()
-    {
-        return static_cast<Type>(distribution(generator));
-    }
-
-    template class RandomGenerator<int>;
+int MATRIX::RandomGenerator::generate()
+{
+    return this->distribution(this->generator);
 }
