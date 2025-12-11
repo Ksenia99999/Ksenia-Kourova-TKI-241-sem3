@@ -1,55 +1,55 @@
 #pragma once
-#include <iostream>
 #include <memory>
-#include <cmath>
+#include <string>
+#include <sstream>
 #include <stdexcept>
 
 namespace MATRIX
 {
-    template <class Type>
+    class Generator; 
+
     class Matrix
     {
     private:
-        std::unique_ptr<Type[]> data;  // Умный указатель на массив
-        size_t arraySize;              // Размер массива
-
-        // Вспомогательные методы
-        bool containsDigitOne(Type number) const;
-        size_t findLastPositive() const;
-        Type findMax() const;
+        std::unique_ptr<int[]> data;  // Умный указатель на массив чисел
+        size_t size;                   // Размер массива
 
     public:
         // Конструкторы
-        Matrix();
-        Matrix(const size_t size);
-        Matrix(const Matrix& matrix);
+        Matrix();                              // Конструктор по умолчанию (пустая матрица)
+        explicit Matrix(const size_t size);    // Конструктор с заданным размером
+        Matrix(const size_t size, const int& value);  // Конструктор с размером и значением
+        
+        // Конструктор копирования - создает копию матрицы
+        Matrix(const Matrix& other);
+        
+        // Конструктор перемещения - перемещает данные из другой матрицы
+        Matrix(Matrix&& other) noexcept;
+        
+        // Оператор присваивания копированием
+        Matrix& operator=(const Matrix& other);
+        
+        // Оператор присваивания перемещением
+        Matrix& operator=(Matrix&& other) noexcept;
+        
+        // Деструктор - автоматически освобождает память через unique_ptr
         ~Matrix() = default;
 
-        // Операторы
-        Matrix& operator=(const Matrix& other);
-        Matrix operator+(const Matrix& other) const;
-        Matrix operator-(const Matrix& other) const;
-        Matrix operator*(const double coef) const;
+        // Операторы сдвига
+        Matrix operator<<(int shift) const;    // Сдвиг влево (возвращает новую матрицу)
+        Matrix operator>>(int shift) const;    // Сдвиг вправо (возвращает новую матрицу)
+        Matrix& operator<<=(int shift);        // Сдвиг влево с присваиванием
+        Matrix& operator>>=(int shift);        // Сдвиг вправо с присваиванием
 
-        // Дружественные операторы
-        template <class T>
-        friend Matrix<T> operator*(const double coef, const Matrix<T>& other);
-
-        template <class T>
-        friend std::ostream& operator<<(std::ostream& os, const Matrix<T>& other);
+        // Операторы доступа к элементам
+        int& operator[](const size_t index);              // Доступ для записи
+        const int& operator[](const size_t index) const;  // Доступ для чтения
 
         // Методы доступа
-        size_t getSize() const;
-        Type& operator[](size_t index);
-        const Type& operator[](size_t index) const;
+        size_t get_size() const;              // Возвращает размер матрицы
+        std::string to_string() const;        // Преобразует матрицу в строку
 
-        // Методы для трех задач
-        void replaceLastPositiveWithSecond();
-        void insertMaxBeforeOnes();
-        Matrix createNewArray() const;
+        // Метод заполнения матрицы
+        void fill(Generator& generator);
     };
-
-    // Дружественные операторы
-    template <class Type>
-    std::ostream& operator<<(std::ostream& os, const Matrix<Type>& other);
 }
