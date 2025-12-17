@@ -1,19 +1,19 @@
 #include "Tablets.h"
 
 Tablets::Tablets(const std::string& name, const std::string& form,
-    const std::string& expirationDate, const std::string& annotation,
-    double price, const std::string& manufacturer,
-    const std::vector<std::string>& diseases,
-    int count, double dosage)
+                 const std::string& expirationDate, const std::string& annotation,
+                 double price, const std::string& manufacturer,
+                 const std::vector<std::string>& diseases,
+                 int count, double dosage)
     : Medicine(name, form, expirationDate, annotation, price, manufacturer, diseases),
-    count(count), dosage(dosage) {}
+      count(count), dosage(dosage) {}
 
 int Tablets::getCount() const { return count; }
 double Tablets::getDosage() const { return dosage; }
 
 std::string Tablets::getInfo() const {
-    return Medicine::getInfo() +
-        ", ß¥ß⁄ß·: ß¥ß—ß“ß›ß÷ß‰ß‹ß⁄" +
-        ", ß¨ß‡ß›ß⁄ßÈß÷ß„ß‰ß”ß‡: " + std::to_string(count) + " ßÍß‰." +
-        ", ß•ß‡ßŸß⁄ß‚ß‡ß”ß‹ß—: " + std::to_string(dosage) + " ßﬁß‘";
+    return Medicine::getInfo() + 
+           ", –¢–∏–ø: –¢–∞–±–ª–µ—Ç–∫–∏" +
+           ", –ö–æ–ª–∏—á–µ—Å—Ç–≤–æ: " + std::to_string(count) + " —à—Ç." +
+           ", –î–æ–∑–∏—Ä–æ–≤–∫–∞: " + std::to_string(dosage) + " –º–≥";
 }
