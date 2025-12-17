@@ -1,15 +1,15 @@
 #include "Medicine.h"
 
-// ß¨ß‡ßﬂß„ß‰ß‚ßÂß‹ß‰ß‡ß‚
+// –ö–æ–Ω—Å—Ç—Ä—É–∫—Ç–æ—Ä
 Medicine::Medicine(const std::string& name, const std::string& form,
-    const std::string& expirationDate, const std::string& annotation,
-    double price, const std::string& manufacturer,
-    const std::vector<std::string>& diseases)
+                   const std::string& expirationDate, const std::string& annotation,
+                   double price, const std::string& manufacturer,
+                   const std::vector<std::string>& diseases)
     : name(name), form(form), expirationDate(expirationDate),
-    annotation(annotation), price(price), manufacturer(manufacturer),
-    diseases(diseases) {}
+      annotation(annotation), price(price), manufacturer(manufacturer),
+      diseases(diseases) {}
 
-// ß§ß÷ß‰ß‰ß÷ß‚ßÌ
+// –ì–µ—Ç—Ç–µ—Ä—ã
 std::string Medicine::getName() const { return name; }
 std::string Medicine::getForm() const { return form; }
 std::string Medicine::getExpirationDate() const { return expirationDate; }
@@ -29,7 +29,7 @@ bool Medicine::isForDisease(const std::string& disease) const {
 }
 
 std::string Medicine::getInfo() const {
-    return "ß≠ß÷ß‹ß—ß‚ß„ß‰ß”ß‡: " + name +
-        ", ß∂ß‡ß‚ßﬁß—: " + form +
-        ", ß∏ß÷ßﬂß—: " + std::to_string(price) + " ß‚ßÂß“.";
+    return "–õ–µ–∫–∞—Ä—Å—Ç–≤–æ: " + name + 
+           ", –§–æ—Ä–º–∞: " + form + 
+           ", –¶–µ–Ω–∞: " + std::to_string(price) + " —Ä—É–±.";
 }
