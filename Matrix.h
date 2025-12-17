@@ -6,45 +6,50 @@
 
 namespace MATRIX
 {
-    class Generator; 
+    class Generator;  
 
     class Matrix
     {
     private:
-        std::unique_ptr<int[]> data;  // Умный указатель на массив чисел
-        size_t size;                   // Размер массива
+        std::unique_ptr<int[]> data;
+        size_t size;
 
     public:
         // Конструкторы
-        Matrix();                              // Конструктор по умолчанию (пустая матрица)
-        explicit Matrix(const size_t size);    // Конструктор с заданным размером
-        Matrix(const size_t size, const int& value);  // Конструктор с размером и значением
+        Matrix();
+        explicit Matrix(const size_t size);
+        Matrix(const size_t size, const int& value);
         
-        // Конструктор перемещения - перемещает данные из другой матрицы
+        // Копирующий конструктор
+        Matrix(const Matrix& other);
+        
+        // Перемещающий конструктор
         Matrix(Matrix&& other) noexcept;
         
-        // Оператор присваивания перемещением
+        // Копирующий оператор присваивания
+        Matrix& operator=(const Matrix& other);
+        
+        // Перемещающий оператор присваивания
         Matrix& operator=(Matrix&& other) noexcept;
         
-        // Деструктор - автоматически освобождает память через unique_ptr
+        // Деструктор
         ~Matrix() = default;
 
         // Операторы сдвига
-        Matrix operator<<(int shift) const;    // Сдвиг влево (возвращает новую матрицу)
-        Matrix operator>>(int shift) const;    // Сдвиг вправо (возвращает новую матрицу)
-        Matrix& operator<<=(int shift);        // Сдвиг влево с присваиванием
-        Matrix& operator>>=(int shift);        // Сдвиг вправо с присваиванием
+        Matrix operator<<(int shift) const;
+        Matrix operator>>(int shift) const;
+        Matrix& operator<<=(int shift);
+        Matrix& operator>>=(int shift);
 
-        // Операторы доступа к элементам
-        int& operator[](const size_t index);              // Доступ для записи
-        const int& operator[](const size_t index) const;  // Доступ для чтения
+        // Оператор доступа к элементам
+        int& operator[](const size_t index);
+        const int& operator[](const size_t index) const;
 
         // Методы доступа
-        size_t get_size() const;              // Возвращает размер матрицы
-        std::string to_string() const;        // Преобразует матрицу в строку
+        size_t get_size() const;
+        std::string to_string() const;
 
-        // Метод заполнения матрицы
+        // Метод заполнения
         void fill(Generator& generator);
     };
 }
-
