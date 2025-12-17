@@ -1,23 +1,23 @@
 #pragma once
 #include "Medicine.h"
 
-// ß≥ß⁄ß‚ß‡ß· - ß’ß‚ßÂß‘ß‡ß€ ß‰ß⁄ß· ß›ß÷ß‹ß—ß‚ß„ß‰ß”ß—
+// –°–∏—Ä–æ–ø - –¥—Ä—É–≥–æ–π —Ç–∏–ø –ª–µ–∫–∞—Ä—Å—Ç–≤–∞
 class Syrup : public Medicine {
 private:
-    double volume;      // ß∞ß“ßÏß÷ßﬁ ß” ßﬁß›
-    std::string flavor; // ß£ß‹ßÂß„
+    double volume;      // –û–±—ä–µ–º –≤ –º–ª
+    std::string flavor; // –í–∫—É—Å
 
 public:
     Syrup(const std::string& name, const std::string& form,
-        const std::string& expirationDate, const std::string& annotation,
-        double price, const std::string& manufacturer,
-        const std::vector<std::string>& diseases,
-        double volume, const std::string& flavor);
+          const std::string& expirationDate, const std::string& annotation,
+          double price, const std::string& manufacturer,
+          const std::vector<std::string>& diseases,
+          double volume, const std::string& flavor);
 
-    // ß§ß÷ß‰ß‰ß÷ß‚ßÌ
+    // –ì–µ—Ç—Ç–µ—Ä—ã
     double getVolume() const;
     std::string getFlavor() const;
 
-    // ß±ß÷ß‚ß÷ß‡ß·ß‚ß÷ß’ß÷ß›ß÷ßﬂß⁄ß÷ ßﬁß÷ß‰ß‡ß’ß—
+    // –ü–µ—Ä–µ–æ–ø—Ä–µ–¥–µ–ª–µ–Ω–∏–µ –º–µ—Ç–æ–¥–∞
     std::string getInfo() const override;
 };
