@@ -3,28 +3,28 @@
 #include <vector>
 #include <memory>
 
-// §¢§Ñ§Ù§à§Ó§í§Û §Ü§İ§Ñ§ã§ã §­§Ö§Ü§Ñ§â§ã§ä§Ó§à
+// Ğ‘Ğ°Ğ·Ğ¾Ğ²Ñ‹Ğ¹ ĞºĞ»Ğ°ÑÑ Ğ´Ğ»Ñ Ğ²ÑĞµÑ… Ğ»ĞµĞºĞ°Ñ€ÑÑ‚Ğ²
 class Medicine {
 protected:
-    std::string name;           // §¯§Ñ§Ù§Ó§Ñ§ß§Ú§Ö
-    std::string form;           // §¶§à§â§Ş§Ñ §Ó§í§á§å§ã§Ü§Ñ (§ä§Ñ§Ò§İ§Ö§ä§Ü§Ú, §ã§Ú§â§à§á §Ú §ä.§Õ.)
-    std::string expirationDate; // §³§â§à§Ü §Ô§à§Õ§ß§à§ã§ä§Ú
-    std::string annotation;     // §¡§ß§ß§à§ä§Ñ§è§Ú§ñ (§à§á§Ú§ã§Ñ§ß§Ú§Ö, §á§à§Ü§Ñ§Ù§Ñ§ß§Ú§ñ)
-    double price;               // §¸§Ö§ß§Ñ
-    std::string manufacturer;   // §ª§Ù§Ô§à§ä§à§Ó§Ú§ä§Ö§İ§î
-    std::vector<std::string> diseases; // §¢§à§İ§Ö§Ù§ß§Ú, §Õ§İ§ñ §Ü§à§ä§à§â§í§ç §á§â§Ú§Ş§Ö§ß§ñ§Ö§ä§ã§ñ
+    std::string name;           // ĞĞ°Ğ·Ğ²Ğ°Ğ½Ğ¸Ğµ Ğ»ĞµĞºĞ°Ñ€ÑÑ‚Ğ²Ğ°
+    std::string form;           // Ğ¤Ğ¾Ñ€Ğ¼Ğ° Ğ²Ñ‹Ğ¿ÑƒÑĞºĞ° (Ñ‚Ğ°Ğ±Ğ»ĞµÑ‚ĞºĞ¸, ÑĞ¸Ñ€Ğ¾Ğ¿ Ğ¸ Ñ‚.Ğ´.)
+    std::string expirationDate; // Ğ¡Ñ€Ğ¾Ğº Ğ³Ğ¾Ğ´Ğ½Ğ¾ÑÑ‚Ğ¸
+    std::string annotation;     // ĞĞ¿Ğ¸ÑĞ°Ğ½Ğ¸Ğµ/Ğ¿Ğ¾ĞºĞ°Ğ·Ğ°Ğ½Ğ¸Ñ
+    double price;               // Ğ¦ĞµĞ½Ğ°
+    std::string manufacturer;   // ĞŸÑ€Ğ¾Ğ¸Ğ·Ğ²Ğ¾Ğ´Ğ¸Ñ‚ĞµĞ»ÑŒ
+    std::vector<std::string> diseases; // Ğ‘Ğ¾Ğ»ĞµĞ·Ğ½Ğ¸, ĞºĞ¾Ñ‚Ğ¾Ñ€Ñ‹Ğµ Ğ»ĞµÑ‡Ğ¸Ñ‚
 
 public:
-    // §¬§à§ß§ã§ä§â§å§Ü§ä§à§â
+    // ĞšĞ¾Ğ½ÑÑ‚Ñ€ÑƒĞºÑ‚Ğ¾Ñ€
     Medicine(const std::string& name, const std::string& form,
-        const std::string& expirationDate, const std::string& annotation,
-        double price, const std::string& manufacturer,
-        const std::vector<std::string>& diseases = {});
+             const std::string& expirationDate, const std::string& annotation,
+             double price, const std::string& manufacturer,
+             const std::vector<std::string>& diseases = {});
 
-    // §£§Ú§â§ä§å§Ñ§İ§î§ß§í§Û §Õ§Ö§ã§ä§â§å§Ü§ä§à§â §Õ§İ§ñ §á§à§İ§Ú§Ş§à§â§æ§Ú§Ù§Ş§Ñ
+    // Ğ’Ğ¸Ñ€Ñ‚ÑƒĞ°Ğ»ÑŒĞ½Ñ‹Ğ¹ Ğ´ĞµÑÑ‚Ñ€ÑƒĞºÑ‚Ğ¾Ñ€ Ğ´Ğ»Ñ Ğ¿Ğ¾Ğ»Ğ¸Ğ¼Ğ¾Ñ€Ñ„Ğ¸Ğ·Ğ¼Ğ°
     virtual ~Medicine() = default;
 
-    // §¤§Ö§ä§ä§Ö§â§í
+    // Ğ“ĞµÑ‚Ñ‚ĞµÑ€Ñ‹
     std::string getName() const;
     std::string getForm() const;
     std::string getExpirationDate() const;
@@ -33,9 +33,9 @@ public:
     std::string getManufacturer() const;
     std::vector<std::string> getDiseases() const;
 
-    // §±§â§à§Ó§Ö§â§Ü§Ñ, §á§â§Ú§Ş§Ö§ß§ñ§Ö§ä§ã§ñ §İ§Ú §Õ§İ§ñ §Ò§à§İ§Ö§Ù§ß§Ú
+    // ĞŸÑ€Ğ¾Ğ²ĞµÑ€ĞºĞ°, Ğ»ĞµÑ‡Ğ¸Ñ‚ Ğ»Ğ¸ Ğ»ĞµĞºĞ°Ñ€ÑÑ‚Ğ²Ğ¾ ĞºĞ¾Ğ½ĞºÑ€ĞµÑ‚Ğ½ÑƒÑ Ğ±Ğ¾Ğ»ĞµĞ·Ğ½ÑŒ
     bool isForDisease(const std::string& disease) const;
 
-    // §£§Ú§â§ä§å§Ñ§İ§î§ß§í§Û §Ş§Ö§ä§à§Õ §Õ§İ§ñ §á§à§İ§å§é§Ö§ß§Ú§ñ §Ú§ß§æ§à§â§Ş§Ñ§è§Ú§Ú (§Ò§Ö§Ù §Ó§í§Ó§à§Õ§Ñ!)
+    // Ğ’Ğ¸Ñ€Ñ‚ÑƒĞ°Ğ»ÑŒĞ½Ñ‹Ğ¹ Ğ¼ĞµÑ‚Ğ¾Ğ´ Ğ´Ğ»Ñ Ğ¿Ğ¾Ğ»ÑƒÑ‡ĞµĞ½Ğ¸Ñ Ğ¸Ğ½Ñ„Ğ¾Ñ€Ğ¼Ğ°Ñ†Ğ¸Ğ¸
     virtual std::string getInfo() const;
 };
