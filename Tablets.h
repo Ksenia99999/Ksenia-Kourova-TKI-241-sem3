@@ -1,23 +1,23 @@
 #pragma once
 #include "Medicine.h"
 
-// ���ѧҧݧ֧�ܧ� - �ܧ�ߧܧ�֧�ߧ��� ��ڧ� �ݧ֧ܧѧ���ӧ�
+// Таблетки - конкретный тип лекарства
 class Tablets : public Medicine {
 private:
-    int count;          // ����ݧڧ�֧��ӧ� ��ѧҧݧ֧���
-    double dosage;      // ����٧ڧ��ӧܧ� (�ާ�)
+    int count;          // Количество таблеток
+    double dosage;      // Дозировка (мг)
 
 public:
     Tablets(const std::string& name, const std::string& form,
-        const std::string& expirationDate, const std::string& annotation,
-        double price, const std::string& manufacturer,
-        const std::vector<std::string>& diseases,
-        int count, double dosage);
+            const std::string& expirationDate, const std::string& annotation,
+            double price, const std::string& manufacturer,
+            const std::vector<std::string>& diseases,
+            int count, double dosage);
 
-    // ���֧��֧�� �էݧ� ���֧�ڧ�ڧ�ߧ��� ���ݧ֧�
+    // Геттеры для специфичных полей
     int getCount() const;
     double getDosage() const;
 
-    // ���֧�֧���֧է֧ݧ֧ߧڧ� �ާ֧��է�
+    // Переопределение метода
     std::string getInfo() const override;
 };
