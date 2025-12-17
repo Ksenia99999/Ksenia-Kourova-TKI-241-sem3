@@ -7,38 +7,40 @@
 
 class Apteka {
 private:
-    std::vector<std::shared_ptr<Medicine>> medicines;  // ����� �ݧ֧ܧѧ���ӧ�
-    std::vector<std::shared_ptr<Sale>> sales;          // ����� ����էѧا�
+    std::vector<std::shared_ptr<Medicine>> medicines;  // Все лекарства
+    std::vector<std::shared_ptr<Sale>> sales;          // Все продажи
 
 public:
-    // ����ҧѧӧݧ֧ߧڧ� �ݧ֧ܧѧ����
+    // Добавление лекарств
     void addMedicine(const std::shared_ptr<Medicine>& medicine);
-
-    // ���֧ԧڧ���ѧ�ڧ� ����էѧا�
-    void addSale(const std::shared_ptr<Medicine>& medicine,
-        const std::string& date, int quantity);
-
-    // 1. �����էѧӧѧ�� �էѧߧߧ��� �� �ݧ֧ܧѧ���ӧѧ�
+    
+    // Регистрация продажи
+    void addSale(const std::shared_ptr<Medicine>& medicine, 
+                 const std::string& date, int quantity);
+    
+    // === МЕТОДЫ ПО ЗАДАНИЮ ===
+    
+    // 1. Выдавать данные о лекарствах
     std::vector<std::shared_ptr<Medicine>> getAllMedicines() const;
     std::vector<std::string> getAllMedicineInfo() const;
-
-    // 2. �����էѧӧѧ�� �ڧߧ���ާѧ�ڧ� �� ����էѧاѧ� �٧� ��֧�ڧ��
+    
+    // 2. Выдавать информацию о продажах за период
     struct SalesReport {
         std::string medicineName;
         int totalQuantity;
         double totalRevenue;
     };
-
+    
     SalesReport getSalesReport(const std::string& medicineName,
-        const std::string& period) const;
-
-    // 3. �����էѧӧѧ�� ���ڧ��� �ݧ֧ܧѧ���� �էݧ� �ҧ�ݧ֧٧ߧ�
+                               const std::string& period) const;
+    
+    // 3. Выдавать список лекарств для болезни
     std::vector<std::shared_ptr<Medicine>> getMedicinesForDisease(
         const std::string& disease) const;
-
-    // ������ާ�ԧѧ�֧ݧ�ߧ��� �ާ֧��է�
+    
+    // Вспомогательные методы
     std::shared_ptr<Medicine> findMedicineByName(const std::string& name) const;
-
-    // ����ݧ��֧ߧڧ� �ӧ�֧� ����էѧ�
+    
+    // Получение всех продаж
     const std::vector<std::shared_ptr<Sale>>& getSales() const;
 };
