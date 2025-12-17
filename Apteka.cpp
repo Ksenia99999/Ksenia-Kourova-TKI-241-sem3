@@ -1,24 +1,24 @@
 #include "Apteka.h"
 #include <algorithm>
 
-// ����ҧѧӧݧ֧ߧڧ� �ݧ֧ܧѧ���ӧ�
+// Добавление лекарства
 void Apteka::addMedicine(const std::shared_ptr<Medicine>& medicine) {
     medicines.push_back(medicine);
 }
 
-// ����ҧѧӧݧ֧ߧڧ� ����էѧا�
-void Apteka::addSale(const std::shared_ptr<Medicine>& medicine,
-    const std::string& date, int quantity) {
+// Добавление продажи
+void Apteka::addSale(const std::shared_ptr<Medicine>& medicine, 
+                     const std::string& date, int quantity) {
     auto sale = std::make_shared<Sale>(medicine, date, quantity);
     sales.push_back(sale);
 }
 
-// 1. ����ݧ��ڧ�� �ӧ�� �ݧ֧ܧѧ���ӧ�
+// 1. Получить все лекарства
 std::vector<std::shared_ptr<Medicine>> Apteka::getAllMedicines() const {
     return medicines;
 }
 
-// 1. ����ݧ��ڧ�� �ڧߧ���ާѧ�ڧ� �� �ӧ�֧� �ݧ֧ܧѧ���ӧѧ�
+// 1. Получить информацию о всех лекарствах
 std::vector<std::string> Apteka::getAllMedicineInfo() const {
     std::vector<std::string> info;
     for (const auto& med : medicines) {
@@ -27,28 +27,26 @@ std::vector<std::string> Apteka::getAllMedicineInfo() const {
     return info;
 }
 
-// 2. �����֧� ��� ����էѧاѧ� �٧� ��֧�ڧ��
+// 2. Отчет по продажам за период
 Apteka::SalesReport Apteka::getSalesReport(const std::string& medicineName,
-    const std::string& period) const {
-    SalesReport report{ medicineName, 0, 0.0 };
-
-    // �����֧է֧ݧ�֧� ��֧�ڧ��
+                                           const std::string& period) const {
+    SalesReport report{medicineName, 0, 0.0};
+    
+    // Определяем период
     std::string startDate, endDate;
-    if (period == "�ߧ֧է֧ݧ�") {
-        // �������֧ߧߧѧ� �ݧ�ԧڧܧ� - ����ݧ֧էߧڧ� 7 �էߧ֧�
-        startDate = "2025-01-01"; // ����ڧާ֧�
-        endDate = "2025-01-07";
+    if (period == "неделя") {
+        // Упрощенная логика - последние 7 дней
+        startDate = "2024-01-01"; // Пример
+        endDate = "2024-01-07";
+    } else if (period == "месяц") {
+        startDate = "2024-01-01";
+        endDate = "2024-01-31";
+    } else if (period == "год") {
+        startDate = "2024-01-01";
+        endDate = "2024-12-31";
     }
-    else if (period == "�ާ֧���") {
-        startDate = "2025-01-01";
-        endDate = "2025-01-31";
-    }
-    else if (period == "�ԧ��") {
-        startDate = "2025-01-01";
-        endDate = "202-12-31";
-    }
-
-    // ����ڧ�ѧ֧� ����էѧا�
+    
+    // Считаем продажи
     for (const auto& sale : sales) {
         if (sale->getMedicine()->getName() == medicineName &&
             sale->isInPeriod(startDate, endDate)) {
@@ -56,14 +54,14 @@ Apteka::SalesReport Apteka::getSalesReport(const std::string& medicineName,
             report.totalRevenue += sale->getTotalPrice();
         }
     }
-
+    
     return report;
 }
 
-// 3. ���֧ܧѧ���ӧ� �էݧ� �ҧ�ݧ֧٧ߧ�
+// 3. Лекарства для болезни
 std::vector<std::shared_ptr<Medicine>> Apteka::getMedicinesForDisease(
     const std::string& disease) const {
-
+    
     std::vector<std::shared_ptr<Medicine>> result;
     for (const auto& med : medicines) {
         if (med->isForDisease(disease)) {
@@ -73,7 +71,7 @@ std::vector<std::shared_ptr<Medicine>> Apteka::getMedicinesForDisease(
     return result;
 }
 
-// ����ڧ�� �ݧ֧ܧѧ���ӧ� ��� �ڧާ֧ߧ�
+// Поиск лекарства по имени
 std::shared_ptr<Medicine> Apteka::findMedicineByName(const std::string& name) const {
     for (const auto& med : medicines) {
         if (med->getName() == name) {
@@ -83,7 +81,7 @@ std::shared_ptr<Medicine> Apteka::findMedicineByName(const std::string& name) co
     return nullptr;
 }
 
-// ����ݧ��ڧ�� �ӧ�� ����էѧا�
+// Получить все продажи
 const std::vector<std::shared_ptr<Sale>>& Apteka::getSales() const {
     return sales;
 }
