@@ -3,23 +3,23 @@
 #include <memory>
 #include "Medicine.h"
 
-// ß±ß‚ß‡ß’ß—ßÿß— ß›ß÷ß‹ß—ß‚ß„ß‰ß”ß—
+// –ó–∞–ø–∏—Å—å –æ –ø—Ä–æ–¥–∞–∂–µ –ª–µ–∫–∞—Ä—Å—Ç–≤–∞
 class Sale {
 private:
     std::shared_ptr<Medicine> medicine;
-    std::string date;           // ß•ß—ß‰ß— ß·ß‚ß‡ß’ß—ßÿß⁄ 
-    int quantity;               // ß¨ß‡ß›ß⁄ßÈß÷ß„ß‰ß”ß‡ ß·ß‚ß‡ß’ß—ßﬂßﬂß‡ß‘ß‡
-    double totalPrice;          // ß∞ß“ßÎß—ßÒ ß„ßÂßﬁßﬁß—
+    std::string date;           // –î–∞—Ç–∞ –ø—Ä–æ–¥–∞–∂–∏ (–ì–ì–ì–ì-–ú–ú-–î–î)
+    int quantity;               // –ö–æ–ª–∏—á–µ—Å—Ç–≤–æ –ø—Ä–æ–¥–∞–Ω–Ω–æ–≥–æ
+    double totalPrice;          // –û–±—â–∞—è —Å—É–º–º–∞
 
 public:
     Sale(std::shared_ptr<Medicine> medicine, const std::string& date, int quantity);
-
-    // ß§ß÷ß‰ß‰ß÷ß‚ßÌ
+    
+    // –ì–µ—Ç—Ç–µ—Ä—ã
     std::shared_ptr<Medicine> getMedicine() const;
     std::string getDate() const;
     int getQuantity() const;
     double getTotalPrice() const;
-
-    // ß±ß‚ß‡ß”ß÷ß‚ß‹ß—, ß·ß‡ß·ß—ß’ß—ß÷ß‰ ß›ß⁄ ß’ß—ß‰ß— ß” ß·ß÷ß‚ß⁄ß‡ß’
+    
+    // –ü—Ä–æ–≤–µ—Ä–∫–∞, –ø–æ–ø–∞–¥–∞–µ—Ç –ª–∏ –¥–∞—Ç–∞ –≤ –ø–µ—Ä–∏–æ–¥
     bool isInPeriod(const std::string& startDate, const std::string& endDate) const;
 };
